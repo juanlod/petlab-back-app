@@ -1,0 +1,1 @@
+[  {    "_id": ObjectId("617b6f0f6a94e6f315d1dcad"),    "ids": 1,    "value": "MACHO"  },  {    "_id": ObjectId("617b6f0f6a94e6f315d1dcae"),    "ids": 2,    "value": "HEMBRA"  },  {    "_id": ObjectId("617b6f0f6a94e6f315d1dcaf"),    "ids": 3,    "value": "MACHO CASTRADO"  },  {    "_id": ObjectId("617b6f0f6a94e6f315d1dcb0"),    "ids": 4,    "value": "HEMBRA CASTRADA"  }]
