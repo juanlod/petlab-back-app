@@ -1,42 +1,47 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { ISex, Sex } from 'src/database/schemas/master/sex';
+
 import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from './sex-repository';
+} from '../../controllers/clinic/debts/debt-repository';
+import { IDebt, Debt } from 'src/database/schemas/clinic/debts';
 
 @Injectable()
-export class SexService {
+export class DebtService {
   constructor(
-    @Inject('SEX_MODEL')
-    private sexModel: Model<ISex>,
+    @Inject('DEBT_MODEL')
+    private debtModel: Model<IDebt>,
   ) {}
 
-  async create(sex: Sex): Promise<any> {
-    const id = (await this.sexModel.aggregate(getLastByIdPipeline()).exec())[0]
-      .ids;
-    sex.ids = id ? id + 1 : 1;
-    return await this.sexModel.create(sex);
+  async create(debt: Debt): Promise<any> {
+    const id = (await this.debtModel.aggregate(getLastByIdPipeline()).exec())[0]
+      ?.id;
+    debt.id = id ? id + 1 : 1;
+    return await this.debtModel.create(debt);
   }
 
-  async findAll() {
-    return await this.sexModel.find().exec();
+  findAll() {
+    return this.debtModel.find();
+  }
+
+  findAllByClientId(id: number): Promise<any> {
+    return this.debtModel.find({ clientId: id });
   }
 
   async findOne(id: number): Promise<any> {
-    return await this.sexModel.findOne({ _id: id });
+    return await this.debtModel.findOne({ _id: id });
   }
 
-  async update(id: string, sex: Sex) {
+  async update(id: string, debt: Debt) {
     const filter = { _id: id };
-    const updateData = { $set: sex };
-    return await this.sexModel.updateOne(filter, updateData);
+    const updateData = { $set: debt };
+    return await this.debtModel.updateOne(filter, updateData);
   }
 
   async remove(id: number) {
-    return await this.sexModel.deleteOne({ _id: id });
+    return await this.debtModel.deleteOne({ _id: id });
   }
 
   async findAllPaging(filter?: string, page?: number, pageSize?: number) {
@@ -56,11 +61,11 @@ export class SexService {
     }
 
     // Get and count the results
-    const results = await this.sexModel.aggregate(
+    const results = await this.debtModel.aggregate(
       findAllPaging(regex, offset, pageSize),
     );
 
-    const count_values = (await this.sexModel.aggregate(countValues())) as any;
+    const count_values = (await this.debtModel.aggregate(countValues())) as any;
 
     return {
       data: results,

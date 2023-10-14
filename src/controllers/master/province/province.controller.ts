@@ -8,7 +8,7 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { ProvinceService } from './province.service';
+import { ProvinceService } from '../../../services/master/province.service';
 0;
 import {
   ApiOperation,

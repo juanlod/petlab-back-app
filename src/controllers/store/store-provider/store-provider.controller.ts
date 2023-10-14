@@ -21,7 +21,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { StoreProvider } from 'src/database/schemas/store/store-provider';
-import { StoreProviderService } from './store-provider.service';
+import { StoreProviderService } from '../../../services/store/store-provider.service';
 
 @ApiTags('StoreProvider')
 @Controller('/api/storeProvider')

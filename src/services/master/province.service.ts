@@ -1,46 +1,43 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import {
-  IStoreProvider,
-  StoreProvider,
-} from 'src/database/schemas/store/store-provider';
+import { IProvince, Province } from 'src/database/schemas/master/province';
 import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from './store-provider-repository';
+} from '../../controllers/master/province/province-repository';
 
 @Injectable()
-export class StoreProviderService {
+export class ProvinceService {
   constructor(
-    @Inject('STORE_PROVIDER_MODEL')
-    private storeProviderModel: Model<IStoreProvider>,
+    @Inject('PROVINCE_MODEL')
+    private provinceModel: Model<IProvince>,
   ) {}
 
-  async create(storeProvider: StoreProvider): Promise<any> {
+  async create(province: Province): Promise<any> {
     const id = (
-      await this.storeProviderModel.aggregate(getLastByIdPipeline()).exec()
+      await this.provinceModel.aggregate(getLastByIdPipeline()).exec()
     )[0]?.id;
-    storeProvider.id = id ? id + 1 : 1;
-    return await this.storeProviderModel.create(storeProvider);
+    province.id = id ? id + 1 : 1;
+    return await this.provinceModel.create(province);
   }
 
-  findAll() {
-    return this.storeProviderModel.find({ deleted: false });
+  async findAll() {
+    return await this.provinceModel.find().exec();
   }
 
-  findOne(id: string): Promise<StoreProvider> {
-    return this.storeProviderModel.findOne({ _id: id });
+  async findOne(id: number): Promise<any> {
+    return await this.provinceModel.findOne({ _id: id });
   }
 
-  async update(id: string, storeProvider: StoreProvider) {
+  async update(id: string, province: Province) {
     const filter = { _id: id };
-    const updateData = { $set: storeProvider };
-    return await this.storeProviderModel.updateOne(filter, updateData);
+    const updateData = { $set: province };
+    return await this.provinceModel.updateOne(filter, updateData);
   }
 
   async remove(id: number) {
-    return await this.storeProviderModel.deleteOne({ _id: id });
+    return await this.provinceModel.deleteOne({ _id: id });
   }
 
   async findAllPaging(filter?: string, page?: number, pageSize?: number) {
@@ -60,11 +57,13 @@ export class StoreProviderService {
     }
 
     // Get and count the results
-    const results = await this.storeProviderModel.aggregate(
+    const results = await this.provinceModel.aggregate(
       findAllPaging(regex, offset, pageSize),
     );
 
-    const count_values = await this.storeProviderModel.aggregate(countValues());
+    const count_values = (await this.provinceModel.aggregate(
+      countValues(),
+    )) as any;
 
     return {
       data: results,

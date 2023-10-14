@@ -9,7 +9,7 @@ import {
   Query,
   Logger,
 } from '@nestjs/common';
-import { ClientsService } from './clients.service';
+import { ClientsService } from '../../../services/master/clients.service';
 import { Auth } from 'auth/auth.decorator';
 import { Role } from 'auth/role';
 import {

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { PetService } from './pets.service';
+import { PetService } from '../../../services/clinic/pets.service';
 import { PetsController } from './pets.controller';
 import { DatabaseModule } from 'src/database/database.module';
 import { JwtModule } from '@nestjs/jwt';

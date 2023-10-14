@@ -21,7 +21,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { IProduct, Product } from 'src/database/schemas/store/product';
-import { ProductService } from './product.service';
+import { ProductService } from '../../../services/store/product.service';
 
 @ApiTags('Product')
 @Controller('/api/product')

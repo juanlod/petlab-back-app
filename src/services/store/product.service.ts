@@ -5,8 +5,8 @@ import {
   countValues,
   findAllPagingProducts,
   getLastByIdPipeline,
-} from './product-repository';
-import { BatchService } from '../batches/batches.service';
+} from '../../controllers/store/product/product-repository';
+import { BatchService } from './batches.service';
 
 @Injectable()
 export class ProductService {

@@ -1,47 +1,42 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-
+import { ICoat, Coat } from 'src/database/schemas/master/coat';
 import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from './debt-repository';
-import { IDebt, Debt } from 'src/database/schemas/clinic/debts';
+} from '../../controllers/master/coat/coat-repository';
 
 @Injectable()
-export class DebtService {
+export class CoatService {
   constructor(
-    @Inject('DEBT_MODEL')
-    private debtModel: Model<IDebt>,
+    @Inject('COAT_MODEL')
+    private coatModel: Model<ICoat>,
   ) {}
 
-  async create(debt: Debt): Promise<any> {
-    const id = (await this.debtModel.aggregate(getLastByIdPipeline()).exec())[0]
+  async create(coat: Coat): Promise<any> {
+    const id = (await this.coatModel.aggregate(getLastByIdPipeline()).exec())[0]
       ?.id;
-    debt.id = id ? id + 1 : 1;
-    return await this.debtModel.create(debt);
+    coat.id = id ? id + 1 : 1;
+    return await this.coatModel.create(coat);
   }
 
   findAll() {
-    return this.debtModel.find();
-  }
-
-  findAllByClientId(id: number): Promise<any> {
-    return this.debtModel.find({ clientId: id });
+    return this.coatModel.find();
   }
 
   async findOne(id: number): Promise<any> {
-    return await this.debtModel.findOne({ _id: id });
+    return await this.coatModel.findOne({ _id: id });
   }
 
-  async update(id: string, debt: Debt) {
+  async update(id: string, coat: Coat) {
     const filter = { _id: id };
-    const updateData = { $set: debt };
-    return await this.debtModel.updateOne(filter, updateData);
+    const updateData = { $set: coat };
+    return await this.coatModel.updateOne(filter, updateData);
   }
 
   async remove(id: number) {
-    return await this.debtModel.deleteOne({ _id: id });
+    return await this.coatModel.deleteOne({ _id: id });
   }
 
   async findAllPaging(filter?: string, page?: number, pageSize?: number) {
@@ -61,11 +56,11 @@ export class DebtService {
     }
 
     // Get and count the results
-    const results = await this.debtModel.aggregate(
+    const results = await this.coatModel.aggregate(
       findAllPaging(regex, offset, pageSize),
     );
 
-    const count_values = (await this.debtModel.aggregate(countValues())) as any;
+    const count_values = (await this.coatModel.aggregate(countValues())) as any;
 
     return {
       data: results,

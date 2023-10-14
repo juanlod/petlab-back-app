@@ -1,43 +1,43 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { ILocality, Locality } from 'src/database/schemas/master/locality';
+import { ISpecies, Species } from 'src/database/schemas/master/species';
 import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from './locality-repository';
+} from '../../controllers/master/species/species-repository';
 
 @Injectable()
-export class LocalityService {
+export class SpeciesService {
   constructor(
-    @Inject('LOCALITY_MODEL')
-    private localityModel: Model<ILocality>,
+    @Inject('SPECIES_MODEL')
+    private speciesModel: Model<ISpecies>,
   ) {}
 
-  async create(locality: Locality): Promise<any> {
+  async create(species: Species): Promise<Species> {
     const id = (
-      await this.localityModel.aggregate(getLastByIdPipeline()).exec()
+      await this.speciesModel.aggregate(getLastByIdPipeline()).exec()
     )[0]?.id;
-    locality.id = id ? id + 1 : 1;
-    return await this.localityModel.create(locality);
+    species.id = id ? id + 1 : 1;
+    return await this.speciesModel.create(species);
   }
 
   findAll() {
-    return this.localityModel.find();
+    return this.speciesModel.find();
   }
 
-  async findOne(id: number): Promise<any> {
-    return await this.localityModel.findOne({ _id: id });
+  findOne(id: string): Promise<Species> {
+    return this.speciesModel.findOne({ _id: id });
   }
 
-  async update(id: string, locality: Locality) {
+  async update(id: string, species: Species) {
     const filter = { _id: id };
-    const updateData = { $set: locality };
-    return await this.localityModel.updateOne(filter, updateData);
+    const updateData = { $set: species };
+    return await this.speciesModel.updateOne(filter, updateData);
   }
 
   async remove(id: number) {
-    return await this.localityModel.deleteOne({ _id: id });
+    return await this.speciesModel.deleteOne({ _id: id });
   }
 
   async findAllPaging(filter?: string, page?: number, pageSize?: number) {
@@ -57,11 +57,11 @@ export class LocalityService {
     }
 
     // Get and count the results
-    const results = await this.localityModel.aggregate(
+    const results = await this.speciesModel.aggregate(
       findAllPaging(regex, offset, pageSize),
     );
 
-    const count_values = (await this.localityModel.aggregate(
+    const count_values = (await this.speciesModel.aggregate(
       countValues(),
     )) as any;
 

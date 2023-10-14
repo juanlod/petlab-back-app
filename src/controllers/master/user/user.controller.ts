@@ -9,7 +9,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { UserService } from './user.service';
+import { UserService } from '../../../services/store/user.service';
 import { LoginDto, User } from 'src/database/schemas/User';
 
 @ApiTags('User')

@@ -1,43 +1,43 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { IRace, Race } from 'src/database/schemas/master/race';
+import { IUnityType, UnityType } from 'src/database/schemas/store/unity-type';
 import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from './race-repository';
+} from '../../controllers/store/unity-type/unity-type-repository';
 
 @Injectable()
-export class RaceService {
+export class UnityTypeService {
   constructor(
-    @Inject('RACE_MODEL')
-    private raceModel: Model<IRace>,
+    @Inject('UNITY_TYPE_MODEL')
+    private unityTypeModel: Model<IUnityType>,
   ) {}
 
-  async create(race: Race): Promise<any> {
-    const id = (await this.raceModel.aggregate(getLastByIdPipeline()).exec())[0]
-      ?.id;
-    race.id = id ? id + 1 : 1;
-    console.log(id);
-    return await this.raceModel.create(race);
+  async create(unityType: UnityType): Promise<any> {
+    const id = (
+      await this.unityTypeModel.aggregate(getLastByIdPipeline()).exec()
+    )[0]?.id;
+    unityType.id = id ? id + 1 : 1;
+    return await this.unityTypeModel.create(unityType);
   }
 
-  async findAll() {
-    return await this.raceModel.find().exec();
+  findAll() {
+    return this.unityTypeModel.find({ deleted: false });
   }
 
-  async findOne(id: number): Promise<any> {
-    return await this.raceModel.findOne({ _id: id });
+  findOne(id: string): Promise<UnityType> {
+    return this.unityTypeModel.findOne({ _id: id });
   }
 
-  async update(id: string, race: Race) {
+  async update(id: string, unityType: UnityType) {
     const filter = { _id: id };
-    const updateData = { $set: race };
-    return await this.raceModel.updateOne(filter, updateData);
+    const updateData = { $set: unityType };
+    return await this.unityTypeModel.updateOne(filter, updateData);
   }
 
   async remove(id: number) {
-    return await this.raceModel.deleteOne({ _id: id });
+    return await this.unityTypeModel.deleteOne({ _id: id });
   }
 
   async findAllPaging(filter?: string, page?: number, pageSize?: number) {
@@ -57,11 +57,13 @@ export class RaceService {
     }
 
     // Get and count the results
-    const results = await this.raceModel.aggregate(
+    const results = await this.unityTypeModel.aggregate(
       findAllPaging(regex, offset, pageSize),
     );
 
-    const count_values = (await this.raceModel.aggregate(countValues())) as any;
+    const count_values = (await this.unityTypeModel.aggregate(
+      countValues(),
+    )) as any;
 
     return {
       data: results,

@@ -1,43 +1,43 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { IProvince, Province } from 'src/database/schemas/master/province';
+import { ILocality, Locality } from 'src/database/schemas/master/locality';
 import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from './province-repository';
+} from '../../controllers/master/locality/locality-repository';
 
 @Injectable()
-export class ProvinceService {
+export class LocalityService {
   constructor(
-    @Inject('PROVINCE_MODEL')
-    private provinceModel: Model<IProvince>,
+    @Inject('LOCALITY_MODEL')
+    private localityModel: Model<ILocality>,
   ) {}
 
-  async create(province: Province): Promise<any> {
+  async create(locality: Locality): Promise<any> {
     const id = (
-      await this.provinceModel.aggregate(getLastByIdPipeline()).exec()
+      await this.localityModel.aggregate(getLastByIdPipeline()).exec()
     )[0]?.id;
-    province.id = id ? id + 1 : 1;
-    return await this.provinceModel.create(province);
+    locality.id = id ? id + 1 : 1;
+    return await this.localityModel.create(locality);
   }
 
-  async findAll() {
-    return await this.provinceModel.find().exec();
+  findAll() {
+    return this.localityModel.find();
   }
 
   async findOne(id: number): Promise<any> {
-    return await this.provinceModel.findOne({ _id: id });
+    return await this.localityModel.findOne({ _id: id });
   }
 
-  async update(id: string, province: Province) {
+  async update(id: string, locality: Locality) {
     const filter = { _id: id };
-    const updateData = { $set: province };
-    return await this.provinceModel.updateOne(filter, updateData);
+    const updateData = { $set: locality };
+    return await this.localityModel.updateOne(filter, updateData);
   }
 
   async remove(id: number) {
-    return await this.provinceModel.deleteOne({ _id: id });
+    return await this.localityModel.deleteOne({ _id: id });
   }
 
   async findAllPaging(filter?: string, page?: number, pageSize?: number) {
@@ -57,11 +57,11 @@ export class ProvinceService {
     }
 
     // Get and count the results
-    const results = await this.provinceModel.aggregate(
+    const results = await this.localityModel.aggregate(
       findAllPaging(regex, offset, pageSize),
     );
 
-    const count_values = (await this.provinceModel.aggregate(
+    const count_values = (await this.localityModel.aggregate(
       countValues(),
     )) as any;
 

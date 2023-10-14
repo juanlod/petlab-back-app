@@ -8,7 +8,7 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { RaceService } from './race.service';
+import { RaceService } from '../../../services/master/race.service';
 0;
 import {
   ApiOperation,

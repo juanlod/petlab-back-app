@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
-import { UserModule } from './controllers/user/user.module';
+import { UserModule } from './controllers/master/user/user.module';
 import { ClientsModule } from './controllers/clinic/clients/clients.module';
 import { LocalityModule } from './controllers/master/locality/locality.module';
 import { ProvinceModule } from './controllers/master/province/province.module';
@@ -21,6 +21,7 @@ import { StoreProviderModule } from './controllers/store/store-provider/store-pr
 import { UnityTypeModule } from './controllers/store/unity-type/unity-type.module';
 import { DebtModule } from './controllers/clinic/debts/debt.module';
 import { ClinicImageModule } from './controllers/master/clinic-image/clinic-image.module';
+import { EventsGateway } from './events/events.gateway';
 
 @Module({
   imports: [
@@ -48,7 +49,7 @@ import { ClinicImageModule } from './controllers/master/clinic-image/clinic-imag
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, EventsGateway],
   exports: [JwtModule],
 })
 export class AppModule {}

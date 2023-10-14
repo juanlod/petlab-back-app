@@ -8,7 +8,7 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { CoatService } from './coat.service';
+import { CoatService } from '../../../services/master/coat.service';
 0;
 import {
   ApiOperation,

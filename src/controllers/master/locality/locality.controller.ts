@@ -8,7 +8,7 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { LocalityService } from './locality.service';
+import { LocalityService } from '../../../services/master/locality.service';
 import {
   ApiOperation,
   ApiTags,

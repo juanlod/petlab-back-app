@@ -8,8 +8,7 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { PetHistoryService } from './history.service';
-0;
+import { PetHistoryService } from '../../../services/clinic/history.service';
 import {
   ApiOperation,
   ApiCreatedResponse,
@@ -27,9 +26,9 @@ import {
 } from 'src/database/schemas/clinic/pet-history';
 
 @ApiTags('PetHistory')
-@Controller('/api/history')
+@Controller('/api/pet-history')
 export class PetHistoryController {
-  constructor(private readonly historyService: PetHistoryService) {}
+  constructor(private readonly historyService: PetHistoryService) {}0
 
   @ApiOperation({
     summary: 'Create a new history',

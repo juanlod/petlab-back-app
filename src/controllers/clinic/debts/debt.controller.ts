@@ -8,7 +8,7 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { DebtService } from './debt.service';
+import { DebtService } from '../../../services/clinic/debt.service';
 0;
 import {
   ApiOperation,

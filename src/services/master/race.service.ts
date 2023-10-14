@@ -1,42 +1,43 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { ICoat, Coat } from 'src/database/schemas/master/coat';
+import { IRace, Race } from 'src/database/schemas/master/race';
 import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from './coat-repository';
+} from '../../controllers/master/race/race-repository';
 
 @Injectable()
-export class CoatService {
+export class RaceService {
   constructor(
-    @Inject('COAT_MODEL')
-    private coatModel: Model<ICoat>,
+    @Inject('RACE_MODEL')
+    private raceModel: Model<IRace>,
   ) {}
 
-  async create(coat: Coat): Promise<any> {
-    const id = (await this.coatModel.aggregate(getLastByIdPipeline()).exec())[0]
+  async create(race: Race): Promise<any> {
+    const id = (await this.raceModel.aggregate(getLastByIdPipeline()).exec())[0]
       ?.id;
-    coat.id = id ? id + 1 : 1;
-    return await this.coatModel.create(coat);
+    race.id = id ? id + 1 : 1;
+    console.log(id);
+    return await this.raceModel.create(race);
   }
 
-  findAll() {
-    return this.coatModel.find();
+  async findAll() {
+    return await this.raceModel.find().exec();
   }
 
   async findOne(id: number): Promise<any> {
-    return await this.coatModel.findOne({ _id: id });
+    return await this.raceModel.findOne({ _id: id });
   }
 
-  async update(id: string, coat: Coat) {
+  async update(id: string, race: Race) {
     const filter = { _id: id };
-    const updateData = { $set: coat };
-    return await this.coatModel.updateOne(filter, updateData);
+    const updateData = { $set: race };
+    return await this.raceModel.updateOne(filter, updateData);
   }
 
   async remove(id: number) {
-    return await this.coatModel.deleteOne({ _id: id });
+    return await this.raceModel.deleteOne({ _id: id });
   }
 
   async findAllPaging(filter?: string, page?: number, pageSize?: number) {
@@ -56,11 +57,11 @@ export class CoatService {
     }
 
     // Get and count the results
-    const results = await this.coatModel.aggregate(
+    const results = await this.raceModel.aggregate(
       findAllPaging(regex, offset, pageSize),
     );
 
-    const count_values = (await this.coatModel.aggregate(countValues())) as any;
+    const count_values = (await this.raceModel.aggregate(countValues())) as any;
 
     return {
       data: results,

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { CoatService } from './coat.service';
+import { CoatService } from '../../../services/master/coat.service';
 import { CoatController } from './coat.controller';
 import { coatProviders } from 'src/database/providers/master/coat.provider';
 import { DatabaseModule } from 'src/database/database.module';

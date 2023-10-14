@@ -1,43 +1,42 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { IUnityType, UnityType } from 'src/database/schemas/store/unity-type';
+import { ISex, Sex } from 'src/database/schemas/master/sex';
 import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from './unity-type-repository';
+} from '../../controllers/master/sex/sex-repository';
 
 @Injectable()
-export class UnityTypeService {
+export class SexService {
   constructor(
-    @Inject('UNITY_TYPE_MODEL')
-    private unityTypeModel: Model<IUnityType>,
+    @Inject('SEX_MODEL')
+    private sexModel: Model<ISex>,
   ) {}
 
-  async create(unityType: UnityType): Promise<any> {
-    const id = (
-      await this.unityTypeModel.aggregate(getLastByIdPipeline()).exec()
-    )[0]?.id;
-    unityType.id = id ? id + 1 : 1;
-    return await this.unityTypeModel.create(unityType);
+  async create(sex: Sex): Promise<any> {
+    const id = (await this.sexModel.aggregate(getLastByIdPipeline()).exec())[0]
+      .ids;
+    sex.ids = id ? id + 1 : 1;
+    return await this.sexModel.create(sex);
   }
 
-  findAll() {
-    return this.unityTypeModel.find({ deleted: false });
+  async findAll() {
+    return await this.sexModel.find().exec();
   }
 
-  findOne(id: string): Promise<UnityType> {
-    return this.unityTypeModel.findOne({ _id: id });
+  async findOne(id: number): Promise<any> {
+    return await this.sexModel.findOne({ _id: id });
   }
 
-  async update(id: string, unityType: UnityType) {
+  async update(id: string, sex: Sex) {
     const filter = { _id: id };
-    const updateData = { $set: unityType };
-    return await this.unityTypeModel.updateOne(filter, updateData);
+    const updateData = { $set: sex };
+    return await this.sexModel.updateOne(filter, updateData);
   }
 
   async remove(id: number) {
-    return await this.unityTypeModel.deleteOne({ _id: id });
+    return await this.sexModel.deleteOne({ _id: id });
   }
 
   async findAllPaging(filter?: string, page?: number, pageSize?: number) {
@@ -57,13 +56,11 @@ export class UnityTypeService {
     }
 
     // Get and count the results
-    const results = await this.unityTypeModel.aggregate(
+    const results = await this.sexModel.aggregate(
       findAllPaging(regex, offset, pageSize),
     );
 
-    const count_values = (await this.unityTypeModel.aggregate(
-      countValues(),
-    )) as any;
+    const count_values = (await this.sexModel.aggregate(countValues())) as any;
 
     return {
       data: results,

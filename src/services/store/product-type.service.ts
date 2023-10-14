@@ -1,43 +1,46 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { ISpecies, Species } from 'src/database/schemas/master/species';
+import {
+  IProductType,
+  ProductType,
+} from 'src/database/schemas/store/product-type';
 import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from './species-repository';
+} from '../../controllers/store/product-type/product-type-repository';
 
 @Injectable()
-export class SpeciesService {
+export class ProductTypeService {
   constructor(
-    @Inject('SPECIES_MODEL')
-    private speciesModel: Model<ISpecies>,
+    @Inject('PRODUCT_TYPE_MODEL')
+    private productTypeModel: Model<IProductType>,
   ) {}
 
-  async create(species: Species): Promise<Species> {
+  async create(productType: ProductType): Promise<any> {
     const id = (
-      await this.speciesModel.aggregate(getLastByIdPipeline()).exec()
+      await this.productTypeModel.aggregate(getLastByIdPipeline()).exec()
     )[0]?.id;
-    species.id = id ? id + 1 : 1;
-    return await this.speciesModel.create(species);
+    productType.id = id ? id + 1 : 1;
+    return await this.productTypeModel.create(productType);
   }
 
   findAll() {
-    return this.speciesModel.find();
+    return this.productTypeModel.find({ deleted: false });
   }
 
-  findOne(id: string): Promise<Species> {
-    return this.speciesModel.findOne({ _id: id });
+  findOne(id: string): Promise<ProductType> {
+    return this.productTypeModel.findOne({ _id: id });
   }
 
-  async update(id: string, species: Species) {
+  async update(id: string, productType: ProductType) {
     const filter = { _id: id };
-    const updateData = { $set: species };
-    return await this.speciesModel.updateOne(filter, updateData);
+    const updateData = { $set: productType };
+    return await this.productTypeModel.updateOne(filter, updateData);
   }
 
   async remove(id: number) {
-    return await this.speciesModel.deleteOne({ _id: id });
+    return await this.productTypeModel.deleteOne({ _id: id });
   }
 
   async findAllPaging(filter?: string, page?: number, pageSize?: number) {
@@ -57,13 +60,11 @@ export class SpeciesService {
     }
 
     // Get and count the results
-    const results = await this.speciesModel.aggregate(
+    const results = await this.productTypeModel.aggregate(
       findAllPaging(regex, offset, pageSize),
     );
 
-    const count_values = (await this.speciesModel.aggregate(
-      countValues(),
-    )) as any;
+    const count_values = await this.productTypeModel.aggregate(countValues());
 
     return {
       data: results,

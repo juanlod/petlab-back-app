@@ -8,7 +8,7 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { ClinicImageService } from './clinic-image.service';
+import { ClinicImageService } from '../../../services/master/clinic-image.service';
 0;
 import {
   ApiOperation,

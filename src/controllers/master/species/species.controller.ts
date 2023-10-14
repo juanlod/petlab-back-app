@@ -8,7 +8,7 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { SpeciesService } from './species.service';
+import { SpeciesService } from '../../../services/master/species.service';
 0;
 import {
   ApiOperation,

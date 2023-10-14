@@ -4,7 +4,7 @@ import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from './clinic-image-repository';
+} from '../../controllers/master/clinic-image/clinic-image-repository';
 import {
   IClinicImage,
   ClinicImage,
@@ -60,7 +60,6 @@ export class ClinicImageService {
   }
 
   async remove(id: number) {
-    console.log('id')
     return await this.repository.deleteOne({ id: id });
   }
 
@@ -88,6 +87,8 @@ export class ClinicImageService {
     const count_values = (await this.repository.aggregate(
       countValues(),
     )) as any;
+
+    console.log(results)
 
     return {
       data: results,

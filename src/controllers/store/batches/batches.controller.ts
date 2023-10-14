@@ -21,7 +21,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { Batch, IBatch } from 'src/database/schemas/store/batches';
-import { BatchService } from './batches.service';
+import { BatchService } from '../../../services/store/batches.service';
 
 @ApiTags('Batch')
 @Controller('/api/batch')

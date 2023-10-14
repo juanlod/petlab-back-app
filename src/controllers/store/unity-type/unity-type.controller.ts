@@ -21,7 +21,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { UnityType } from 'src/database/schemas/store/unity-type';
-import { UnityTypeService } from './unity-type.service';
+import { UnityTypeService } from '../../../services/store/unity-type.service';
 
 @ApiTags('UnityType')
 @Controller('/api/unityType')

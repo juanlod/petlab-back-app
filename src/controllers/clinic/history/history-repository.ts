@@ -2,6 +2,24 @@
 export function findAllPaging(regex, offset, pageSize): any {
   return [
     {
+      $match: {
+        nom: regex,
+        $or: [
+          {
+            deleted: false,
+          },
+          {
+            deleted: null,
+          },
+        ],
+      },
+    },
+    {
+      $sort: {
+        nom: 1,
+      },
+    },
+    {
       $skip: offset,
     },
     {
@@ -43,15 +61,9 @@ export function getLastByIdPipeline(): any {
     {
       $group: {
         _id: {},
-        'MAX(id)': {
-          $max: '$id',
+        id: {
+          $max: '$idClinica',
         },
-      },
-    },
-    {
-      $project: {
-        id: '$MAX(id)',
-        _id: 0,
       },
     },
   ];

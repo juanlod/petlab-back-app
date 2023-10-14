@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
+import { getLastByIdPipeline } from 'src/controllers/clinic/history/history-repository';
 import {
   IPetHistory,
   PetHistory,
@@ -13,6 +14,12 @@ export class PetHistoryService {
   ) {}
 
   async create(history: PetHistory): Promise<any> {
+    const idClinica = (
+      await this.historyModel.aggregate(getLastByIdPipeline()).exec()
+    )[0]?.id;
+    console.log(idClinica)
+    history.idClinica = idClinica ? idClinica + 1 : 1;
+
     return await this.historyModel.create(history);
   }
 
@@ -32,6 +39,8 @@ export class PetHistoryService {
       .skip(skipped)
       .limit(countPerPage)
       .exec();
+
+    console.log(history)
     return history;
   }
 

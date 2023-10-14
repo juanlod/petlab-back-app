@@ -8,7 +8,7 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { SexService } from './sex.service';
+import { SexService } from '../../../services/master/sex.service';
 0;
 import {
   ApiOperation,

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { PetHistoryService } from './history.service';
+import { PetHistoryService } from '../../../services/clinic/history.service';
 import { PetHistoryController } from './history.controller';
 import { DatabaseModule } from 'src/database/database.module';
 import { historyProviders } from 'src/database/providers/clinic/history.provider';

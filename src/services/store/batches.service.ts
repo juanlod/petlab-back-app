@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { IBatch, Batch } from 'src/database/schemas/store/batches';
-import { getLastByIdPipeline } from './batches-repository';
+import { getLastByIdPipeline } from '../../controllers/store/batches/batches-repository';
 import { of } from 'rxjs';
 
 @Injectable()
