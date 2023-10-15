@@ -5,10 +5,25 @@ import { AppService } from './app.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const corsOptions = {
+    origin: true, // replace with your front-end server location
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+    optionsSuccessStatus: 204,
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Requested-With',
+      'user-security-token',
+    ],
+  };
+
   // Enable swagger json page redirection
   const appService = app.get(AppService);
   appService.setApp(app);
-  app.enableCors();
+
+  app.enableCors(corsOptions);
 
   const options = new DocumentBuilder()
     .setTitle('back')

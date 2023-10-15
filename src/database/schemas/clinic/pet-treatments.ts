@@ -7,16 +7,14 @@ const Schema = mongoose.Schema;
 /**
  * Interfaz de cliente. Necesario para implementacion
  */
-export interface IPetHistory extends Document {
+export interface IPetTreatment extends Document {
   _id: string;
   idClinica: number;
   idm: number;
   fec: Date;
-  cli: string;
-  tmp: number;
-  pes: number;
-  idu: number;
-  CantFotos: number;
+  productId: number;
+  batchId: number;
+  quantity: number;
   type: string;
 }
 
@@ -24,7 +22,7 @@ export interface IPetHistory extends Document {
  * Las numeracion de las imagenes de historia clinica de doctorvet se realiza mediante idm + idClinica + número de foto
  */
 
-export class PetHistory {
+export class PetTreatment {
   @ApiProperty({ description: 'mongo id' })
   _id: string;
 
@@ -37,40 +35,32 @@ export class PetHistory {
   @ApiProperty({ description: 'creation date' })
   fec: Date;
 
-  @ApiProperty({ description: 'desease information' })
-  cli: string;
+  @ApiProperty({ description: 'product id' })
+  productId: number;
 
-  @ApiProperty({ description: 'temperature' })
-  tmp: number;
+  @ApiProperty({ description: 'batch id' })
+  batchId: number;
 
-  @ApiProperty({ description: 'weight' })
-  pes: number;
-
-  @ApiProperty({ description: '' })
-  idu: number;
-
-  @ApiProperty({ description: 'photography size' })
-  cantFotos: number;
+  @ApiProperty({ description: 'quantity treatment' })
+  quantity: number;
 
   @ApiProperty({ description: 'type' })
   type: string;
 
-  constructor(petHistory: IPetHistory) {
-    this._id = petHistory._id;
-    this.idClinica = petHistory.idClinica;
-    this.idm = petHistory.idm;
-    this.fec = petHistory.fec;
-    this.cli = petHistory.cli;
-    this.tmp = petHistory.tmp;
-    this.pes = petHistory.pes;
-    this.idu = petHistory.idu;
-    this.cantFotos = petHistory.CantFotos;
-    this.type = petHistory.type;
+  constructor(petTreatment: IPetTreatment) {
+    this._id = petTreatment._id;
+    this.idClinica = petTreatment.idClinica;
+    this.idm = petTreatment.idm;
+    this.fec = petTreatment.fec;
+    this.productId = petTreatment.productId;
+    this.batchId = petTreatment.batchId;
+    this.quantity = petTreatment.quantity;
+    this.type = petTreatment.type;
   }
 }
 
 // Creacion de clase cliente a traves de la interfaz
-export const PetHistorySchema = new Schema<IPetHistory>({
+export const PetTreatmentSchema = new Schema<IPetTreatment>({
   idClinica: {
     type: Number,
     required: true,
@@ -83,23 +73,16 @@ export const PetHistorySchema = new Schema<IPetHistory>({
     type: Date,
     required: false,
   },
-  cli: {
-    type: String,
-    required: false,
-  },
-  tmp: {
+
+  productId: {
     type: Number,
     required: false,
   },
-  pes: {
+  batchId: {
     type: Number,
     required: false,
   },
-  idu: {
-    type: Number,
-    required: false,
-  },
-  CantFotos: {
+  quantity: {
     type: Number,
     required: false,
   },

@@ -5,10 +5,15 @@ import {
   SubscribeMessage,
   OnGatewayConnection,
   OnGatewayDisconnect,
+  ConnectedSocket,
+  MessageBody,
 } from '@nestjs/websockets';
-import { Server } from 'ws';
+import { Socket, Server } from 'socket.io';
+import { environment } from 'src/environments/environment';
 
-@WebSocketGateway() // Puedes especificar un puerto diferente, por defecto es 80
+@WebSocketGateway(4202, {
+  cors: { origin: environment.origin, credentials: true },
+})
 export class EventsGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -19,16 +24,20 @@ export class EventsGateway
     console.log('WebSocket Initialized!');
   }
 
-  handleConnection(client: any, ...args: any[]) {
+  handleConnection(client: Socket) {
     console.log('Client connected:', client.id);
   }
 
-  handleDisconnect(client: any) {
+  handleDisconnect(client: Socket) {
     console.log('Client disconnected:', client.id);
   }
 
   @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
-    return 'Hello world!';
+  handleMessage(
+    @MessageBody() data: string,
+    @ConnectedSocket() client: Socket,
+  ) {
+    // Handle received message
+    this.server.emit('message', data); // Broadcast the message to all connected clients
   }
 }
