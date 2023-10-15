@@ -85,7 +85,7 @@ export class PetHistoryController {
     @Param('id') id: number,
     @Query('loadedCount') loadedCount?: number,
     @Query('skip') skip?: number,
-  ): Promise<IPetHistory[]> {
+  ): Promise<PetHistory[]> {
     if (!loadedCount) {
       loadedCount = 10; // valor por defecto
     }

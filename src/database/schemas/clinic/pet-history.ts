@@ -50,6 +50,21 @@ export class PetHistory {
 
   @ApiProperty({ description: 'photography size' })
   cantFotos: number;
+
+  @ApiProperty({ description: 'type' })
+  type = 'HISTORY';
+
+  constructor(petHistory: IPetHistory) {
+    this._id = petHistory._id;
+    this.idClinica = petHistory.idClinica;
+    this.idm = petHistory.idm;
+    this.fec = petHistory.fec;
+    this.cli = petHistory.cli;
+    this.tmp = petHistory.tmp;
+    this.pes = petHistory.pes;
+    this.idu = petHistory.idu;
+    this.cantFotos = petHistory.CantFotos;
+  }
 }
 
 // Creacion de clase cliente a traves de la interfaz
