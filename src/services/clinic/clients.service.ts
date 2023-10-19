@@ -3,12 +3,12 @@ import {
   countValues,
   getClientListPipeline,
   getLastClientIdPipeline,
-} from '../../controllers/clinic/clients/client.repository';
+} from '../../repository/clinic/client.repository';
 import { Model } from 'mongoose';
 import { Client, IClient } from 'src/database/schemas/clinic/client';
-import { PetService } from '../clinic/pets.service';
+import { PetService } from './pets.service';
 import * as bcrypt from 'bcrypt';
-import { DebtService } from '../clinic/debt.service';
+import { DebtService } from './debt.service';
 
 @Injectable()
 export class ClientsService {

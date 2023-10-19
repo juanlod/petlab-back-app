@@ -5,7 +5,7 @@ import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from '../../controllers/master/coat/coat-repository';
+} from '../../repository/master/coat.repository';
 
 @Injectable()
 export class CoatService {

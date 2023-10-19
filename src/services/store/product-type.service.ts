@@ -8,7 +8,7 @@ import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from '../../controllers/store/product-type/product-type-repository';
+} from '../../repository/store/product-type-repository';
 
 @Injectable()
 export class ProductTypeService {

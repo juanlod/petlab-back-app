@@ -5,7 +5,7 @@ import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from '../../controllers/master/locality/locality-repository';
+} from '../../repository/master/locality.repository';
 
 @Injectable()
 export class LocalityService {

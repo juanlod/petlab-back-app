@@ -5,7 +5,7 @@ import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from '../../controllers/clinic/debts/debt-repository';
+} from '../../repository/clinic/debt.repository';
 import { IDebt, Debt } from 'src/database/schemas/clinic/debts';
 
 @Injectable()

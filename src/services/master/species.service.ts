@@ -5,7 +5,7 @@ import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from '../../controllers/master/species/species-repository';
+} from '../../repository/master/species.repository';
 
 @Injectable()
 export class SpeciesService {

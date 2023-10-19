@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { getLastByIdPipeline } from 'src/controllers/clinic/history/history-repository';
+import { getLastByIdPipeline } from 'src/repository/clinic/history.repository';
 import {
   IPetHistory,
   PetHistory,
@@ -22,7 +22,6 @@ export class PetHistoryService {
     const idClinica = (
       await this.historyModel.aggregate(getLastByIdPipeline()).exec()
     )[0]?.id;
-    console.log(idClinica);
     history.idClinica = idClinica ? idClinica + 1 : 1;
 
     return await this.historyModel.create(history);
@@ -68,6 +67,25 @@ export class PetHistoryService {
   }
 
   /**
+   * Busca una historia por id de clinica
+   * @param id
+   * @returns
+   */
+  async findByCLinicId(id: number): Promise<any> {
+    return await this.historyModel.findOne({ idClinica: id });
+  }
+
+  /**
+   * Busca una historia por fecha
+   * @param id
+   * @returns
+   */
+  async findByDate(date: string): Promise<any> {
+    const history = await this.historyModel.findOne({ fec: date });
+    return history ? new PetHistory(history) : null;
+  }
+
+  /**
    * Actualiza una historia
    * @param id
    * @param history
@@ -84,7 +102,8 @@ export class PetHistoryService {
    * @param id
    * @returns
    */
-  async remove(id: string) {
-    return await this.historyModel.deleteOne({ _id: id });
+  async remove(id: number) {
+    console.log();
+    return await this.historyModel.deleteOne({ idClinica: id });
   }
 }

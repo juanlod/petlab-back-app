@@ -21,7 +21,7 @@ import { StoreProviderModule } from './controllers/store/store-provider/store-pr
 import { UnityTypeModule } from './controllers/store/unity-type/unity-type.module';
 import { DebtModule } from './controllers/clinic/debts/debt.module';
 import { ClinicImageModule } from './controllers/master/clinic-image/clinic-image.module';
-import { EventsGateway } from './events/events.gateway';
+import { WebsocketGateway } from './websocket/websocket.gateway';
 
 @Module({
   imports: [
@@ -49,7 +49,7 @@ import { EventsGateway } from './events/events.gateway';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, EventsGateway],
+  providers: [AppService, WebsocketGateway],
   exports: [JwtModule],
 })
 export class AppModule {}

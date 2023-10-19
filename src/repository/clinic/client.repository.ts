@@ -15,8 +15,8 @@ export function getClientListPipeline(
     ? [
         {
           $lookup: {
-            localField: 'idc',
             from: 'mascotas',
+            localField: 'idc',
             foreignField: 'idc',
             as: 'mascotas',
           },
@@ -31,14 +31,15 @@ export function getClientListPipeline(
         },
         {
           $match: {
-            ayn: regex,
-            mascotas: { $elemMatch: { nom: regex, delete: false } },
+            $and: [
+              { ayn: { $in: [regex] } },
+              { 'mascotas.nom': { $in: [regex], $ne: false } },
+            ],
           },
         },
         {
           $sort: {
             ayn: 1,
-            'mascotas.nom': 1,
           },
         },
         {
@@ -51,8 +52,8 @@ export function getClientListPipeline(
     : [
         {
           $lookup: {
-            localField: 'idc',
             from: 'mascotas',
+            localField: 'idc',
             foreignField: 'idc',
             as: 'mascotas',
           },
@@ -67,16 +68,12 @@ export function getClientListPipeline(
         },
         {
           $match: {
-            $or: [
-              { ayn: regex },
-              { mascotas: { $elemMatch: { nom: regex, delete: false } } },
-            ],
+            $or: [{ ayn: regex }, { 'mascotas.nom': { $regex: regex } }],
           },
         },
         {
           $sort: {
             ayn: 1,
-            'mascotas.nom': 1,
           },
         },
         {

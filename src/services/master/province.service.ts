@@ -5,7 +5,7 @@ import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from '../../controllers/master/province/province-repository';
+} from '../../repository/master/province.repository';
 
 @Injectable()
 export class ProvinceService {

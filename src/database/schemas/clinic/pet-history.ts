@@ -13,6 +13,7 @@ export interface IPetHistory extends Document {
   idm: number;
   fec: Date;
   cli: string;
+  consultationReason: string;
   tmp: number;
   pes: number;
   idu: number;
@@ -39,6 +40,9 @@ export class PetHistory {
 
   @ApiProperty({ description: 'desease information' })
   cli: string;
+  
+  @ApiProperty({ description: 'consultation reason' })
+  consultationReason: string;
 
   @ApiProperty({ description: 'temperature' })
   tmp: number;
@@ -66,6 +70,7 @@ export class PetHistory {
     this.idu = petHistory.idu;
     this.cantFotos = petHistory.CantFotos;
     this.type = petHistory.type;
+    this.consultationReason = petHistory.consultationReason;
   }
 }
 
@@ -84,6 +89,10 @@ export const PetHistorySchema = new Schema<IPetHistory>({
     required: false,
   },
   cli: {
+    type: String,
+    required: false,
+  }, 
+  consultationReason: {
     type: String,
     required: false,
   },

@@ -4,7 +4,7 @@ import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from '../../controllers/master/clinic-image/clinic-image-repository';
+} from '../../repository/master/clinic-image.repository';
 import {
   IClinicImage,
   ClinicImage,

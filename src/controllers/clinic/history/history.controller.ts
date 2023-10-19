@@ -28,7 +28,8 @@ import {
 @ApiTags('PetHistory')
 @Controller('/api/pet-history')
 export class PetHistoryController {
-  constructor(private readonly historyService: PetHistoryService) {}0
+  constructor(private readonly historyService: PetHistoryService) {}
+  0;
 
   @ApiOperation({
     summary: 'Create a new history',
@@ -69,6 +70,34 @@ export class PetHistoryController {
   @Get('find_one/:id')
   findOne(@Param('id') id: string) {
     return this.historyService.findOne(id);
+  }
+
+  @ApiOperation({
+    summary: 'Retrieve a history by Clinic id',
+    operationId: 'findByCLinicIdPetHistory',
+  })
+  @ApiOkResponse({
+    description: 'Retrieved history successfully.',
+    type: PetHistory,
+  })
+  @ApiNotFoundResponse({ description: 'PetHistory not found.' })
+  @Get('find_by_clinic_id/:id')
+  findByCLinicId(@Param('id') id: number) {
+    return this.historyService.findByCLinicId(id);
+  }
+
+  @ApiOperation({
+    summary: 'Retrieve a history by Date',
+    operationId: 'findByDatePetHistory',
+  })
+  @ApiOkResponse({
+    description: 'Retrieved history successfully.',
+    type: PetHistory,
+  })
+  @ApiNotFoundResponse({ description: 'PetHistory not found.' })
+  @Get('find_by_date/:date')
+  findByDate(@Param('date') date: string) {
+    return this.historyService.findByDate(date);
   }
 
   @ApiOperation({
@@ -115,7 +144,7 @@ export class PetHistoryController {
   @ApiOkResponse({ description: 'The history has been successfully removed.' })
   @ApiNotFoundResponse({ description: 'history not found.' })
   @Delete('delete/:id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.historyService.remove(id);
   }
 
