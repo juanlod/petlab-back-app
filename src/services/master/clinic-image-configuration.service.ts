@@ -6,15 +6,15 @@ import {
   getLastByIdPipeline,
 } from '../../repository/master/clinic-image.repository';
 import {
-  IClinicImage,
-  ClinicImage,
-} from 'src/database/schemas/master/clinic-image';
+  IClinicImageConfiguration,
+  ClinicImageConfiguration,
+} from 'src/database/schemas/master/clinic-image-configuration';
 
 @Injectable()
-export class ClinicImageService {
+export class ClinicImageConfigurationService {
   constructor(
-    @Inject('CLINIC_IMAGES_MODEL')
-    private repository: Model<IClinicImage>,
+    @Inject('CLINIC_IMAGE_CONFIGURATION_MODEL')
+    private repository: Model<IClinicImageConfiguration>,
   ) {}
 
   /**
@@ -22,7 +22,7 @@ export class ClinicImageService {
    * @param image
    * @returns
    */
-  async create(image: ClinicImage): Promise<any> {
+  async create(image: ClinicImageConfiguration): Promise<any> {
     const id = (
       await this.repository.aggregate(getLastByIdPipeline()).exec()
     )[0]?.id;
@@ -34,7 +34,7 @@ export class ClinicImageService {
    * Obtiene todos los elementos
    * @returns
    */
-  findAll() {
+  getConfig() {
     return this.repository.find();
   }
 
@@ -53,7 +53,7 @@ export class ClinicImageService {
    * @param image
    * @returns
    */
-  async update(id: string, image: ClinicImage) {
+  async update(id: string, image: ClinicImageConfiguration) {
     const filter = { _id: id };
     const updateData = { $set: image };
     return await this.repository.updateOne(filter, updateData);
@@ -88,7 +88,7 @@ export class ClinicImageService {
       countValues(),
     )) as any;
 
-    console.log(results)
+    console.log(results);
 
     return {
       data: results,

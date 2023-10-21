@@ -20,8 +20,9 @@ import { ProductModule } from './controllers/store/product/product.module';
 import { StoreProviderModule } from './controllers/store/store-provider/store-provider.module';
 import { UnityTypeModule } from './controllers/store/unity-type/unity-type.module';
 import { DebtModule } from './controllers/clinic/debts/debt.module';
-import { ClinicImageModule } from './controllers/master/clinic-image/clinic-image.module';
+import { ClinicImageConfigurationModule } from './controllers/master/clinic-image-configuration/clinic-image-configuration.module';
 import { WebsocketGateway } from './websocket/websocket.gateway';
+import { GoogleDriveModule } from './controllers/google/google-drive/google-drive.module';
 
 @Module({
   imports: [
@@ -41,8 +42,9 @@ import { WebsocketGateway } from './websocket/websocket.gateway';
     ProductTypeModule,
     StoreProviderModule,
     UnityTypeModule,
-    ClinicImageModule,
+    ClinicImageConfigurationModule,
     DebtModule,
+    GoogleDriveModule,
     JwtModule.register({
       secret: environment.secret, // reemplaza esto con tu propia clave secreta
       signOptions: { expiresIn: '7d' }, // cambia según tus necesidades

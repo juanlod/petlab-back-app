@@ -1,97 +1,145 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
-import { Model } from 'mongoose';
-import { IUser, User } from 'src/database/schemas/user';
-import * as moment from 'moment';
-import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
+import { drive_v3, google } from 'googleapis';
+import { Injectable, Logger } from '@nestjs/common';
+import { ClinicImageConfigurationService } from '../master/clinic-image-configuration.service';
 
 @Injectable()
-export class UserService {
-  private readonly logger = new Logger(UserService.name);
+export class GoogleDriveService {
+  private readonly logger = new Logger(GoogleDriveService.name);
+  private drive: drive_v3.Drive;
 
   constructor(
-    @Inject('USER_MODEL')
-    private userModel: Model<IUser>,
-    private jwtService: JwtService,
+    private clinicImageConfiguration: ClinicImageConfigurationService,
   ) {}
 
-  /**
-   * Login user
-   * @param user
-   * @returns
-   */
-  async login(email: string, password: string) {
-    const result = await this.userModel.findOne({ email: email });
-
-    if (!result) {
-      throw new BadRequestException('USER.LOGIN.PASSWORD.INCORRECT');
-    }
-
-    const isPasswordCorrect = await bcrypt.compare(password, result.password);
-    if (!isPasswordCorrect) {
-      throw new BadRequestException('USER.LOGIN.PASSWORD.INCORRECT');
-    }
-
-    const token = await this.createToken(result);
-    return { user: result, token };
+  async getAuthConfig(): Promise<any> {
+    // Obtén la configuración de tu base de datos o de otro almacenamiento
+    const config = await this.clinicImageConfiguration.getConfig();
+    console.log(config);
+    return config;
   }
 
-  /**
-   * Create user
-   * @param user
-   * @returns
-   */
-  async create(user: any) {
-    const admins = await this.userModel.find({ email: user.email });
+  async getAuthClient(config: any) {
+    const auth = new google.auth.OAuth2(
+      config.clientId,
+      config.clientSecret,
+      'urn:ietf:wg:oauth:2.0:oob',
+    );
+    // Aquí deberás obtener y establecer el token de acceso
+    // auth.setCredentials({access_token: 'YOUR_ACCESS_TOKEN'});
+    return auth;
+  }
 
-    if (admins.length === 0) {
-      if (user.password) {
-        // Se encripta la contraseña
-        const hash = await bcrypt.hash(user.password, 10);
-        user.password = hash;
+  async upload(image: any[]): Promise<void> {
+    if (!this.drive) await this.initDriveClient();
 
-        const reg = await this.userModel.create(user);
-        return { data: reg };
-      } else {
-        throw new BadRequestException('USER.CREATE.PASSWORD.MANDATORY');
+    const config = await this.getAuthConfig();
+    const auth = await this.getAuthClient(config);
+
+    for (const img of image) {
+      const fileMetadata = {
+        name: img.originalname,
+        parents: [config.historyFolder], // Asumiendo que la imagen es para un historial
+      };
+
+      const media = {
+        mimeType: img.mimetype,
+        body: img.buffer,
+      };
+
+      try {
+        const response = await this.drive.files.create({
+          auth,
+          requestBody: fileMetadata,
+          media,
+        });
+        this.logger.log(`File Id: ${response.data.id}`);
+      } catch (error) {
+        this.logger.error('Error uploading file:', error.message);
       }
-    } else {
-      throw new BadRequestException('USER.CREATE.EMAIL.EXISTS');
     }
   }
 
-  findAll(): IUser[] {
-    return new Array<IUser>();
+  async download(fileId: string): Promise<any> {
+    if (!this.drive) await this.initDriveClient();
+
+    const config = await this.getAuthConfig();
+    const auth = await this.getAuthClient(config);
+
+    try {
+      const response = await this.drive.files.get(
+        {
+          auth,
+          fileId,
+          alt: 'media',
+        },
+        {
+          // Esta opción es necesaria para obtener el cuerpo de respuesta como un stream
+          responseType: 'stream',
+        },
+      );
+
+      // Crear un array para almacenar los chunks de data
+      const chunks: any[] = [];
+      return new Promise((resolve, reject) => {
+        response.data
+          .on('data', (chunk) => chunks.push(chunk)) // Almacenar los chunks de data en el array
+          .on('end', () => resolve(Buffer.concat(chunks))) // Concatenar los chunks y resolver la promesa
+          .on('error', reject); // Rechazar la promesa si hay un error
+      });
+    } catch (error) {
+      this.logger.error('Error downloading file:', error.message);
+      throw new Error(`Error downloading file: ${error.message}`);
+    }
   }
 
-  findOne(id: number): IUser {
-    return Object.assign({});
+  async remove(imageName: string): Promise<string> {
+    if (!this.drive) await this.initDriveClient();
+
+    const config = await this.getAuthConfig();
+    const auth = await this.getAuthClient(config);
+
+    try {
+      const response = await this.drive.files.list({
+        auth,
+        q: `name='${imageName}' and trashed=false`,
+        spaces: 'drive',
+        fields: 'files(id, name)',
+      });
+
+      if (response.data.files.length > 0) {
+        const file = response.data.files[0];
+        await this.drive.files.delete({
+          auth,
+          fileId: file.id,
+        });
+        return `Removed file ${file.name} with id ${file.id}`;
+      } else {
+        return `No file found with name ${imageName}`;
+      }
+    } catch (error) {
+      this.logger.error('Error removing file:', error.message);
+      return `Error removing file: ${error.message}`;
+    }
   }
 
-  update(id: number, user: any): IUser {
-    return Object.assign({});
+  async initDriveClient(): Promise<void> {
+    const config = await this.getAuthConfig();
+    const auth = await this.getAuthClient(config);
+    this.drive = google.drive({ version: 'v3', auth });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} admin`;
-  }
+  async getThumbnailLink(fileId: string): Promise<string | null> {
+    if (!this.drive) await this.initDriveClient();
 
-  async createToken(user: User) {
-    const payload = {
-      sub: user._id,
-      nombre: user.nombres,
-      apellido: user.apellidos,
-      email: user.email,
-      created_date: moment().unix(),
-      expiration_date: moment().add(7, 'days').unix(), // 7 dias de duracion
-      rol: user.rol,
-    };
-    const token = this.jwtService.sign(payload);
-    return token;
+    try {
+      const response = await this.drive.files.get({
+        fileId,
+        fields: 'thumbnailLink',
+      });
+      return response.data.thumbnailLink || null;
+    } catch (error) {
+      this.logger.error('Error fetching thumbnail link:', error.message);
+      throw new Error(`Error fetching thumbnail link: ${error.message}`);
+    }
   }
 }

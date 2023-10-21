@@ -15,6 +15,7 @@ import { batchesProviders } from './providers/store/batches.provider';
 import { unityTypeProviders } from './providers/store/unity-type.provider';
 import { productTypeProviders } from './providers/store/product-type.provider';
 import { debtProviders } from './providers/clinic/debt.provider';
+import { clinicImageProviders } from './providers/master/clinic-image.provider';
 
 const clinicProviders = [
   ...userProviders,
@@ -30,6 +31,7 @@ const masterProviders = [
   ...raceProviders,
   ...speciesProviders,
   ...coatProviders,
+  ...clinicImageProviders,
 ];
 
 const inventoryProviders = [

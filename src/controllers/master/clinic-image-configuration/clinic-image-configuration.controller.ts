@@ -8,7 +8,7 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { ClinicImageService } from '../../../services/master/clinic-image.service';
+import { ClinicImageConfigurationService } from '../../../services/master/clinic-image-configuration.service';
 0;
 import {
   ApiOperation,
@@ -21,50 +21,52 @@ import {
   ApiTags,
   ApiBody,
 } from '@nestjs/swagger';
-import { ClinicImage } from 'src/database/schemas/master/clinic-image';
+import { ClinicImageConfiguration } from 'src/database/schemas/master/clinic-image-configuration';
 
-@ApiTags('ClinicImage')
-@Controller('/api/clinic-image')
-export class ClinicImageController {
-  constructor(private readonly clinicImageService: ClinicImageService) {}
+@ApiTags('ClinicImageConfiguration')
+@Controller('/api/clinic-image-configuarion')
+export class ClinicImageConfigurationController {
+  constructor(
+    private readonly clinicImageService: ClinicImageConfigurationService,
+  ) {}
 
   @ApiOperation({
     summary: 'Create a new clinicImage',
-    operationId: 'createClinicImage',
+    operationId: 'createClinicImageConfiguration',
   })
   @Post('save')
   @ApiCreatedResponse({
     description: 'The clinicImage has been successfully created.',
-    type: ClinicImage,
+    type: ClinicImageConfiguration,
   })
   @ApiBadRequestResponse({ description: 'The request body is invalid.' })
-  @ApiBody({ type: ClinicImage })
-  create(@Body() clinicImage: ClinicImage) {
+  @ApiBody({ type: ClinicImageConfiguration })
+  create(@Body() clinicImage: ClinicImageConfiguration) {
     return this.clinicImageService.create(clinicImage);
   }
 
   @ApiOperation({
     summary: 'Retrieve a list of all clinicImages',
-    operationId: 'findAllClinicImage',
+    operationId: 'findAllClinicImageConfiguration',
   })
   @ApiOkResponse({
     description: 'Retrieved all clinicImages successfully.',
-    type: [ClinicImage],
+    type: [ClinicImageConfiguration],
   })
   @Get('find_all')
   findAll() {
-    return this.clinicImageService.findAll();
+    return this.clinicImageService.getConfig();
   }
 
   @ApiOperation({
     summary: 'Retrieve a clinicImage by ID',
-    operationId: 'findOneClinicImage',
+    operationId: 'findOneClinicImageConfiguration',
   })
   @ApiOkResponse({
     description: 'Retrieved clinicImage successfully.',
-    type: ClinicImage,
+    type: ClinicImageConfiguration,
   })
-  @ApiNotFoundResponse({ description: 'ClinicImage not found.' })
+  @ApiNotFoundResponse({ description: 'ClinicImageConfiguration not found.' })
   @Get('find_one/:id')
   findOne(@Param('id') id: string) {
     return this.clinicImageService.findOne(+id);
@@ -72,23 +74,26 @@ export class ClinicImageController {
 
   @ApiOperation({
     summary: 'Update a clinicImage by ID',
-    operationId: 'updateClinicImage',
+    operationId: 'updateClinicImageConfiguration',
   })
   @ApiOkResponse({
     description: 'The clinicImage has been successfully updated.',
-    type: ClinicImage,
+    type: ClinicImageConfiguration,
   })
   @ApiNotFoundResponse({ description: 'clinicImage not found.' })
   @ApiBadRequestResponse({ description: 'The request body is invalid.' })
   @Patch('update/:id')
-  @ApiBody({ type: ClinicImage })
-  update(@Param('id') id: string, @Body() clinicImage: ClinicImage) {
+  @ApiBody({ type: ClinicImageConfiguration })
+  update(
+    @Param('id') id: string,
+    @Body() clinicImage: ClinicImageConfiguration,
+  ) {
     return this.clinicImageService.update(id, clinicImage);
   }
 
   @ApiOperation({
     summary: 'Remove a clinicImage by ID',
-    operationId: 'removeClinicImage',
+    operationId: 'removeClinicImageConfiguration',
   })
   @ApiOkResponse({
     description: 'The clinicImage has been successfully removed.',
@@ -96,14 +101,14 @@ export class ClinicImageController {
   @ApiNotFoundResponse({ description: 'clinicImage not found.' })
   @Delete('delete/:id')
   remove(@Param('id') id: number) {
-    console.log(id)
+    console.log(id);
     return this.clinicImageService.remove(id);
   }
 
   @Get('find_all/paging')
   @ApiOperation({
     summary: 'Get all clinicImages with pagination',
-    operationId: 'findAllPagingClinicImage',
+    operationId: 'findAllPagingClinicImageConfiguration',
   })
   @ApiQuery({ name: 'filter', required: false })
   @ApiQuery({ name: 'page', required: false })
@@ -111,7 +116,7 @@ export class ClinicImageController {
   @ApiResponse({
     status: 200,
     description: 'Return all clinicImages paginated.',
-    type: [ClinicImage],
+    type: [ClinicImageConfiguration],
   })
   findAllPaging(
     @Query('filter') filter?: string,

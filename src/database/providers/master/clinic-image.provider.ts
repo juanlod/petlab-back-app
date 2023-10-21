@@ -1,11 +1,14 @@
 import mongoose, { Connection } from 'mongoose';
-import { ClinicImageSchema } from 'src/database/schemas/master/clinic-image';
+import { ClinicImageConfigurationSchema } from 'src/database/schemas/master/clinic-image-configuration';
 
 export const clinicImageProviders = [
   {
-    provide: 'CLINIC_IMAGES_MODEL',
+    provide: 'CLINIC_IMAGE_CONFIGURATION_MODEL',
     useFactory: (connection: Connection) =>
-      connection.model('clinic_images', ClinicImageSchema),
+      connection.model(
+        'clinic_image_configuration',
+        ClinicImageConfigurationSchema,
+      ),
     inject: ['DATABASE_CONNECTION'],
   },
 ];
