@@ -4,7 +4,7 @@ export function findAllPaging(regex, offset, pageSize): any {
     {
       $match: {
         name: regex,
-        deleted: false,
+        // deleted: false,
       },
     },
     {
@@ -28,7 +28,7 @@ export function countValues(): any {
         id: {
           $ne: null,
         },
-        deleted: false,
+        // deleted: false,
       },
     },
     {

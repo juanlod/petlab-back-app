@@ -19,6 +19,7 @@ export interface IPetHistory extends Document {
   idu: number;
   CantFotos: number;
   type: string;
+  fixed: boolean;
 }
 
 /**
@@ -26,6 +27,7 @@ export interface IPetHistory extends Document {
  */
 
 export class PetHistory {
+  
   @ApiProperty({ description: 'mongo id' })
   _id: string;
 
@@ -57,7 +59,10 @@ export class PetHistory {
   cantFotos: number;
 
   @ApiProperty({ description: 'type' })
-  type: string;
+  type: string;  
+  
+  @ApiProperty({ description: 'Indica si se fija al principio' })
+  fixed: boolean;
 
   constructor(petHistory: IPetHistory) {
     this._id = petHistory._id;
@@ -71,6 +76,7 @@ export class PetHistory {
     this.cantFotos = petHistory.CantFotos;
     this.type = petHistory.type;
     this.consultationReason = petHistory.consultationReason;
+    this.fixed =  petHistory.fixed;
   }
 }
 
@@ -115,5 +121,10 @@ export const PetHistorySchema = new Schema<IPetHistory>({
   type: {
     type: String,
     required: false,
+  }, 
+  fixed: {
+    type: Boolean,
+    required: false,
+    default: false
   },
 });

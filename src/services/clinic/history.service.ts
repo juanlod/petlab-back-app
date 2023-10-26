@@ -50,7 +50,7 @@ export class PetHistoryService {
     const skipped = loadedCount || 0; // Si loadedCount es undefined, asignar 0
     const history = await this.historyModel
       .find({ idm: idm })
-      .sort({ fec: -1 })
+      .sort({ fixed: -1, fec: -1 })
       .skip(skipped)
       .limit(countPerPage)
       .exec();
@@ -91,8 +91,8 @@ export class PetHistoryService {
    * @param history
    * @returns
    */
-  async update(id: string, history: PetHistory) {
-    const filter = { _id: id };
+  async update(id: number, history: PetHistory) {
+    const filter = { idClinica: id };
     const updateData = { $set: history };
     return await this.historyModel.updateOne(filter, updateData);
   }

@@ -131,10 +131,10 @@ export class PetHistoryController {
   })
   @ApiNotFoundResponse({ description: 'history not found.' })
   @ApiBadRequestResponse({ description: 'The request body is invalid.' })
-  @Patch('update/:id')
+  @Patch('update/:idClinica')
   @ApiBody({ type: PetHistory })
-  update(@Param('id') id: string, @Body() history: PetHistory) {
-    return this.historyService.update(id, history);
+  update(@Param('idClinica') idClinica: number, @Body() history: PetHistory) {
+    return this.historyService.update(idClinica, history);
   }
 
   @ApiOperation({
