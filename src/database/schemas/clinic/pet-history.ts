@@ -14,6 +14,7 @@ export interface IPetHistory extends Document {
   fec: Date;
   cli: string;
   consultationReason: string;
+  treatments: string;
   tmp: number;
   pes: number;
   idu: number;

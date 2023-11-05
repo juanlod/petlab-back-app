@@ -56,6 +56,19 @@ export class ProductController {
   }
 
   @ApiOperation({
+    summary: 'Retrieve a list of all products by type',
+    operationId: 'findAllProductByType',
+  })
+  @ApiOkResponse({
+    description: 'Retrieved all products successfully.',
+    type: [Product],
+  })
+  @Get('find_all/:type')
+  findAllByType(@Param('type') type: string) {
+    return this.productService.findAllByType(type);
+  }
+
+  @ApiOperation({
     summary: 'Retrieve a product by ID',
     operationId: 'findOneProduct',
   })

@@ -11,6 +11,8 @@ export interface IProductType {
   icon: string;
   active: boolean;
   deleted: boolean;
+  deleteable: boolean;
+  editable: boolean;
 }
 
 export const ProductTypeSchema = new Schema<IProductType>({
@@ -19,6 +21,8 @@ export const ProductTypeSchema = new Schema<IProductType>({
   icon: { type: String, required: false },
   active: { type: Boolean, required: false, default: true },
   deleted: { type: Boolean, required: false, default: false },
+  deleteable: { type: Boolean, required: false, default: true },
+  editable: { type: Boolean, required: false, default: true },
 });
 
 export class ProductType {
@@ -39,4 +43,10 @@ export class ProductType {
 
   @ApiProperty()
   deleted: boolean;
+
+  @ApiProperty()
+  deleteable: boolean;
+
+  @ApiProperty()
+  editable: boolean;
 }

@@ -65,7 +65,7 @@ export class ProductTypeController {
   })
   @ApiNotFoundResponse({ description: 'ProductType not found.' })
   @Get('find_one/:id')
-  findOne(@Param('id') id: string): Promise<ProductType> {
+  findOne(@Param('id') id: number): Promise<ProductType> {
     return this.productTypeService.findOne(id);
   }
 
@@ -81,7 +81,7 @@ export class ProductTypeController {
   @ApiBadRequestResponse({ description: 'The request body is invalid.' })
   @Patch('update/:id')
   @ApiBody({ type: ProductType })
-  update(@Param('id') id: string, @Body() productType: ProductType) {
+  update(@Param('id') id: number, @Body() productType: ProductType) {
     return this.productTypeService.update(id, productType);
   }
 

@@ -7,6 +7,7 @@ import {
   getLastByIdPipeline,
 } from '../../repository/store/product-repository';
 import { BatchService } from './batches.service';
+import { ProductTypeService } from './product-type.service';
 
 @Injectable()
 export class ProductService {
@@ -14,6 +15,7 @@ export class ProductService {
     @Inject('PRODUCT_MODEL')
     private productModel: Model<IProduct>,
     private batchesService: BatchService,
+    private typeService: ProductTypeService,
   ) {}
 
   async create(product: Product): Promise<any> {
@@ -26,6 +28,17 @@ export class ProductService {
 
   findAll() {
     return this.productModel.find();
+  }
+
+  /**
+   * Busca productos por tipo de producto
+   * @param type
+   */
+  async findAllByType(type: string) {
+    const productType = await this.typeService.findByType(type);
+    return productType
+      ? this.productModel.find({ typeProductId: productType.id })
+      : [];
   }
 
   async findOne(id: string): Promise<IProduct> {

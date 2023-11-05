@@ -11,6 +11,11 @@ export class BatchService {
     private batchModel: Model<IBatch>,
   ) {}
 
+  /**
+   * Crea un lote
+   * @param batch
+   * @returns
+   */
   async create(batch: Batch): Promise<Batch> {
     const id = (
       await this.batchModel.aggregate(getLastByIdPipeline()).exec()
@@ -20,24 +25,49 @@ export class BatchService {
     return await this.batchModel.create(batch);
   }
 
+  /**
+   * Busca todo
+   * @returns
+   */
   findAll() {
     return this.batchModel.find();
   }
 
+  /**
+   * Busca por id de producto
+   * @param id
+   * @returns
+   */
   async findAllByProductId(id: number) {
-    return await this.batchModel.find({ product_id: id });
+    return await this.batchModel.find({ product_id: id});
   }
 
+  /**
+   * Busca un lote
+   * @param id
+   * @returns
+   */
   findOne(id: string): Promise<Batch> {
     return this.batchModel.findOne({ _id: id });
   }
 
+  /**
+   * Actualiza un lote
+   * @param id
+   * @param batch
+   * @returns
+   */
   async update(id: string, batch: Batch) {
     const filter = { _id: id };
     const updateData = { $set: batch };
     return await this.batchModel.updateOne(filter, updateData);
   }
 
+  /**
+   * Elimina un lote
+   * @param id
+   * @returns
+   */
   async remove(id: number) {
     return await this.batchModel.deleteOne({ _id: id });
   }

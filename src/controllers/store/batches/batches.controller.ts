@@ -15,12 +15,10 @@ import {
   ApiBadRequestResponse,
   ApiOkResponse,
   ApiNotFoundResponse,
-  ApiQuery,
-  ApiResponse,
   ApiTags,
   ApiBody,
 } from '@nestjs/swagger';
-import { Batch, IBatch } from 'src/database/schemas/store/batches';
+import { Batch } from 'src/database/schemas/store/batches';
 import { BatchService } from '../../../services/store/batches.service';
 
 @ApiTags('Batch')
@@ -68,6 +66,20 @@ export class BatchController {
   @Get('find_one/:id')
   findOne(@Param('id') id: string): Promise<Batch> {
     return this.batchService.findOne(id);
+  }
+
+  @ApiOperation({
+    summary: 'Retrieve all batch by product ID',
+    operationId: 'findAllBatchByProductId',
+  })
+  @ApiOkResponse({
+    description: 'Retrieved batch successfully.',
+    type: Batch,
+  })
+  @ApiNotFoundResponse({ description: 'Batch not found.' })
+  @Get('find_all_by_product_id/:id')
+  findAllByProductId(@Param('id') id: number) {
+    return this.batchService.findAllByProductId(id);
   }
 
   @ApiOperation({

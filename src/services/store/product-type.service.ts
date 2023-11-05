@@ -29,12 +29,16 @@ export class ProductTypeService {
     return this.productTypeModel.find({ deleted: false });
   }
 
-  findOne(id: string): Promise<ProductType> {
-    return this.productTypeModel.findOne({ _id: id });
+  findOne(id: number): Promise<ProductType> {
+    return this.productTypeModel.findOne({ id: id });
   }
 
-  async update(id: string, productType: ProductType) {
-    const filter = { _id: id };
+  findByType(type: string): Promise<ProductType> {
+    return this.productTypeModel.findOne({ name: type });
+  }
+
+  async update(id: number, productType: ProductType) {
+    const filter = { id: id };
     const updateData = { $set: productType };
     return await this.productTypeModel.updateOne(filter, updateData);
   }
