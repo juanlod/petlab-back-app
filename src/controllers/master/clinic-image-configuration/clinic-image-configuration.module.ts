@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { DatabaseModule } from 'src/database/database.module';
-import { clinicImageProviders } from 'src/database/providers/master/clinic-image.provider';
 import { ClinicImageConfigurationController } from './clinic-image-configuration.controller';
 import { ClinicImageConfigurationService } from 'src/services/master/clinic-image-configuration.service';
+import { ClinicImageConfiguration } from 'src/database/schemas/master/clinic-image-configuration';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [TypeOrmModule.forFeature([ClinicImageConfiguration])],
   controllers: [ClinicImageConfigurationController],
-  providers: [ClinicImageConfigurationService, ...clinicImageProviders],
+  providers: [ClinicImageConfigurationService],
   exports: [ClinicImageConfigurationService],
 })
 export class ClinicImageConfigurationModule {}

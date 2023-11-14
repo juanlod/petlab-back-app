@@ -23,7 +23,7 @@ import {
   ApiProduces,
   ApiBody,
 } from '@nestjs/swagger';
-import { Client, IClient } from 'src/database/schemas/clinic/client';
+import { Client } from 'src/database/schemas/clinic/client';
 
 @Controller('api/clients')
 @ApiTags('Clients')
@@ -131,7 +131,7 @@ export class ClientsController {
   @ApiResponse({ status: 404, description: 'El cliente no ha sido encontrado' })
   @Get('find_one/:id')
   @ApiProduces('application/json')
-  findOne(@Param('id') id: string): Promise<Client> {
+  findOne(@Param('id') id: number): Promise<Client> {
     return this.clientsService.findOne(id);
   }
 

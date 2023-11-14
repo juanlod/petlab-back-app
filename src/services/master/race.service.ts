@@ -5,7 +5,7 @@ import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from '../../repository/master/race.repository';
+} from '../../database/repository/master/race.repository';
 
 @Injectable()
 export class RaceService {

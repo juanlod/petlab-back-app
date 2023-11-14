@@ -5,7 +5,7 @@ import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from '../../repository/store/unity-type-repository';
+} from '../../database/repository/store/unity-type-repository';
 
 @Injectable()
 export class UnityTypeService {

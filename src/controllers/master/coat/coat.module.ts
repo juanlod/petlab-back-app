@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { CoatService } from '../../../services/master/coat.service';
 import { CoatController } from './coat.controller';
-import { coatProviders } from 'src/database/providers/master/coat.provider';
-import { DatabaseModule } from 'src/database/database.module';
+import { Coat } from 'src/database/schemas/master/coat';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [TypeOrmModule.forFeature([Coat])],
   controllers: [CoatController],
-  providers: [CoatService, ...coatProviders],
+  providers: [CoatService],
 })
 export class CoatModule {}

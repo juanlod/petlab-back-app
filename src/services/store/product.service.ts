@@ -5,7 +5,7 @@ import {
   countValues,
   findAllPagingProducts,
   getLastByIdPipeline,
-} from '../../repository/store/product-repository';
+} from '../../database/repository/store/product-repository';
 import { BatchService } from './batches.service';
 import { ProductTypeService } from './product-type.service';
 

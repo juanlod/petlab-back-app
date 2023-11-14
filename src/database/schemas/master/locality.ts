@@ -1,56 +1,33 @@
-'use strict';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import mongoose from 'mongoose';
 
-const Schema = mongoose.Schema;
-
-/**
- * Interfaz. Necesario para implementacion
- */
-export interface ILocality extends Document {
-  _id: string;
-  id: number;
-  nom: string;
-  dep: number;
-  cp: string;
-  ran: number;
-  deleted: boolean;
-  active: boolean;
-}
-
+@Entity({ name: 'localidades' })
 export class Locality {
   @ApiProperty()
-  _id: string;
-
-  @ApiProperty()
+  @PrimaryGeneratedColumn()
   id: number;
 
   @ApiProperty()
+  @Column({ length: 500 })
   nom: string;
 
   @ApiProperty()
+  @Column()
   dep: number;
 
   @ApiProperty()
+  @Column({ length: 5 })
   cp: string;
 
   @ApiProperty()
+  @Column()
   ran: number;
 
   @ApiProperty()
+  @Column({ default: false })
   deleted: boolean;
 
   @ApiProperty()
+  @Column({ default: true })
   active: boolean;
 }
-
-// Creacion de clase a partir de la interfaz
-export const LocalitySchema = new Schema<ILocality>({
-  id: { type: Number, required: true },
-  nom: { type: String, required: true },
-  dep: { type: Number, required: false },
-  cp: { type: String, required: false },
-  ran: { type: Number, required: false },
-  deleted: { type: Boolean, required: false, default: false },
-  active: { type: Boolean, required: false, default: true },
-});

@@ -21,7 +21,7 @@ import {
   ApiTags,
   ApiBody,
 } from '@nestjs/swagger';
-import { Province, IProvince } from 'src/database/schemas/master/province';
+import { Province } from 'src/database/schemas/master/province';
 
 @ApiTags('Province')
 @Controller('/api/province')
@@ -82,7 +82,7 @@ export class ProvinceController {
   @ApiBadRequestResponse({ description: 'The request body is invalid.' })
   @Patch('update/:id')
   @ApiBody({ type: Province })
-  update(@Param('id') id: string, @Body() province: Province) {
+  update(@Param('id') id: number, @Body() province: Province) {
     return this.provinceService.update(id, province);
   }
 

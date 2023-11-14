@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { IBatch, Batch } from 'src/database/schemas/store/batches';
-import { getLastByIdPipeline } from '../../repository/store/batches-repository';
+import { getLastByIdPipeline } from '../../database/repository/store/batches-repository';
 import { of } from 'rxjs';
 
 @Injectable()
@@ -39,7 +39,7 @@ export class BatchService {
    * @returns
    */
   async findAllByProductId(id: number) {
-    return await this.batchModel.find({ product_id: id});
+    return await this.batchModel.find({ product_id: id });
   }
 
   /**

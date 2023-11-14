@@ -1,75 +1,50 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
-import { ILocality, Locality } from 'src/database/schemas/master/locality';
-import {
-  countValues,
-  findAllPaging,
-  getLastByIdPipeline,
-} from '../../repository/master/locality.repository';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Locality } from 'src/database/schemas/master/locality';
+import { Like, Repository } from 'typeorm';
 
 @Injectable()
 export class LocalityService {
   constructor(
-    @Inject('LOCALITY_MODEL')
-    private localityModel: Model<ILocality>,
+    @InjectRepository(Locality)
+    private localityRepository: Repository<Locality>,
   ) {}
 
-  async create(locality: Locality): Promise<any> {
-    const id = (
-      await this.localityModel.aggregate(getLastByIdPipeline()).exec()
-    )[0]?.id;
-    locality.id = id ? id + 1 : 1;
-    return await this.localityModel.create(locality);
+  async create(locality: Locality): Promise<Locality> {
+    // En TypeORM, save puede crear una nueva entidad si no tiene ID o actualizar una existente si tiene ID
+    return await this.localityRepository.save(locality);
   }
 
-  findAll() {
-    return this.localityModel.find();
+  findAll(): Promise<Locality[]> {
+    return this.localityRepository.find();
   }
 
-  async findOne(id: number): Promise<any> {
-    return await this.localityModel.findOne({ _id: id });
+  findOne(id: number): Promise<Locality> {
+    return this.localityRepository.findOne({ where: { id: id } });
   }
 
-  async update(id: string, locality: Locality) {
-    const filter = { _id: id };
-    const updateData = { $set: locality };
-    return await this.localityModel.updateOne(filter, updateData);
+  async update(id: number, locality: Partial<Locality>): Promise<void> {
+    // En TypeORM, el método update es utilizado para actualizar una entidad existente
+    await this.localityRepository.update(id, locality);
   }
 
-  async remove(id: number) {
-    return await this.localityModel.deleteOne({ _id: id });
+  async remove(id: number): Promise<void> {
+    await this.localityRepository.delete(id);
   }
 
-  async findAllPaging(filter?: string, page?: number, pageSize?: number) {
-    // If the filter is empty, we use a regular expression that matches everything
-
-    page = page ? page : 1;
-    filter = filter ? filter : '';
-    pageSize = pageSize ? pageSize : 10;
-
-    let regex = filter ? new RegExp(filter, 'i') : /.*/;
-    const offset: number = (page - 1) * pageSize;
-    let words = [];
-
-    if (filter) {
-      words = filter.split(',').map((word) => word.trim());
-      regex = new RegExp(words.join('|'), 'i');
-    }
-
-    // Get and count the results
-    const results = await this.localityModel.aggregate(
-      findAllPaging(regex, offset, pageSize),
-    );
-
-    const count_values = (await this.localityModel.aggregate(
-      countValues(),
-    )) as any;
+  async findAllPaging(filter?: string, page = 1, pageSize = 10): Promise<any> {
+    // TypeORM soporta skip y take para paginación
+    const [results, total] = await this.localityRepository.findAndCount({
+      where: filter ? { nom: Like(`%${filter}%`) } : {},
+      take: pageSize,
+      skip: (page - 1) * pageSize,
+    });
 
     return {
       data: results,
       pagina_actual: page,
-      total_paginas: Math.ceil(count_values[0]?.length / pageSize),
-      total_resultados: count_values[0]?.length,
+      total_paginas: Math.ceil(total / pageSize),
+      total_resultados: total,
     };
   }
 }

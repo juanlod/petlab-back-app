@@ -83,7 +83,7 @@ export class LocalityController {
   @ApiBadRequestResponse({ description: 'The request body is invalid.' })
   @Patch('update/:id')
   @ApiBody({ type: Locality })
-  update(@Param('id') id: string, @Body() locality: Locality) {
+  update(@Param('id') id: number, @Body() locality: Locality) {
     return this.localityService.update(id, locality);
   }
 

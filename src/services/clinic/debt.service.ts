@@ -1,77 +1,54 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
-
-import {
-  countValues,
-  findAllPaging,
-  getLastByIdPipeline,
-} from '../../repository/clinic/debt.repository';
-import { IDebt, Debt } from 'src/database/schemas/clinic/debts';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Debt } from 'src/database/schemas/clinic/debts';
 
 @Injectable()
 export class DebtService {
   constructor(
-    @Inject('DEBT_MODEL')
-    private debtModel: Model<IDebt>,
+    @InjectRepository(Debt)
+    private debtRepository: Repository<Debt>,
   ) {}
 
-  async create(debt: Debt): Promise<any> {
-    const id = (await this.debtModel.aggregate(getLastByIdPipeline()).exec())[0]
-      ?.id;
-    debt.id = id ? id + 1 : 1;
-    return await this.debtModel.create(debt);
+  async create(debt: Debt): Promise<Debt> {
+    // En TypeORM, el método save ya se encarga de generar un nuevo id si es necesario
+    return this.debtRepository.save(debt);
   }
 
-  findAll() {
-    return this.debtModel.find();
+  findAll(): Promise<Debt[]> {
+    return this.debtRepository.find();
   }
 
-  findAllByClientId(id: number): Promise<any> {
-    return this.debtModel.find({ clientId: id });
+  findAllByClientId(clientId: number): Promise<Debt[]> {
+    return this.debtRepository.find({ where: { clientId: clientId } });
   }
 
-  async findOne(id: number): Promise<any> {
-    return await this.debtModel.findOne({ _id: id });
+  async findOne(id: number): Promise<Debt | undefined> {
+    return this.debtRepository.findOne({ where: { id: id } });
   }
 
-  async update(id: string, debt: Debt) {
-    const filter = { _id: id };
-    const updateData = { $set: debt };
-    return await this.debtModel.updateOne(filter, updateData);
+  async update(id: number, debt: Partial<Debt>): Promise<Debt> {
+    await this.debtRepository.update(id, debt);
+    return this.debtRepository.findOne({ where: { id: id } });
   }
 
-  async remove(id: number) {
-    return await this.debtModel.deleteOne({ _id: id });
+  async remove(id: number): Promise<void> {
+    await this.debtRepository.delete(id);
   }
 
-  async findAllPaging(filter?: string, page?: number, pageSize?: number) {
-    // If the filter is empty, we use a regular expression that matches everything
-
-    page = page ? page : 1;
-    filter = filter ? filter : '';
-    pageSize = pageSize ? pageSize : 10;
-
-    let regex = filter ? new RegExp(filter, 'i') : /.*/;
-    const offset: number = (page - 1) * pageSize;
-    let words = [];
-
-    if (filter) {
-      words = filter.split(',').map((word) => word.trim());
-      regex = new RegExp(words.join('|'), 'i');
-    }
-
-    // Get and count the results
-    const results = await this.debtModel.aggregate(
-      findAllPaging(regex, offset, pageSize),
-    );
-
-    const count_values = (await this.debtModel.aggregate(countValues())) as any;
+  async findAllPaging(filter?: string, page = 1, pageSize = 10): Promise<any> {
+    // TypeORM maneja el filtrado de una manera diferente a Mongoose. No hay regex.
+    const [results, total] = await this.debtRepository.findAndCount({
+      where: filter ? { ticketNumber: filter } : {}, // Example filter, adjust as needed
+      take: pageSize,
+      skip: (page - 1) * pageSize,
+    });
 
     return {
       data: results,
       pagina_actual: page,
-      total_paginas: Math.ceil(count_values[0]?.length / pageSize),
-      total_resultados: count_values[0]?.length,
+      total_paginas: Math.ceil(total / pageSize),
+      total_resultados: total,
     };
   }
 }

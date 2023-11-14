@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { PetService } from '../../../services/clinic/pets.service';
 import { PetsController } from './pets.controller';
-import { DatabaseModule } from 'src/database/database.module';
 import { JwtModule } from '@nestjs/jwt';
-import { petProviders } from 'src/database/providers/clinic/pet.provider';
+import { Pet } from 'src/database/schemas/clinic/pet';
+import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
 
 @Module({
-  imports: [DatabaseModule, JwtModule],
+  imports: [TypeOrmModule.forFeature([Pet]), JwtModule],
   controllers: [PetsController],
-  providers: [PetService, ...petProviders],
+  providers: [PetService],
 })
 export class PetsModule {}

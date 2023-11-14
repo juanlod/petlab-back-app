@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { SexService } from '../../../services/master/sex.service';
 import { SexController } from './sex.controller';
-import { DatabaseModule } from 'src/database/database.module';
-import { sexProviders } from 'src/database/providers/master/sex.provider';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Sex } from 'src/database/schemas/master/sex';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [TypeOrmModule.forFeature([Sex])],
   controllers: [SexController],
-  providers: [SexService, ...sexProviders],
+  providers: [SexService],
 })
 export class SexModule {}

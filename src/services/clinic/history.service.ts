@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { getLastByIdPipeline } from 'src/repository/clinic/history.repository';
+import { getLastByIdPipeline } from 'src/database/repository/clinic/history.repository';
 import {
   IPetHistory,
   PetHistory,

@@ -3,7 +3,7 @@ import {
   countValues,
   getPetListPipeline,
   getLastPetIdPipeline,
-} from '../../repository/clinic/pets.repository';
+} from '../../database/repository/clinic/pets.repository';
 import { Model } from 'mongoose';
 import { IPet, Pet } from 'src/database/schemas/clinic/pet';
 // import { ClientsService } from '../clients/clients.service';

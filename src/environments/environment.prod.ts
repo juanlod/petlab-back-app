@@ -3,4 +3,10 @@ export const environment = {
   secret: '',
   database: '',
   origin: '',
+
+  host: '',
+  port: '',
+  user: '',
+  password: '',
+  database_name: '',
 };

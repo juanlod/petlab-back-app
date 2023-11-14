@@ -1,75 +1,58 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
-import { IProvince, Province } from 'src/database/schemas/master/province';
-import {
-  countValues,
-  findAllPaging,
-  getLastByIdPipeline,
-} from '../../repository/master/province.repository';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Province } from 'src/database/schemas/master/province';
+import { Like, Not, Repository } from 'typeorm';
 
 @Injectable()
 export class ProvinceService {
   constructor(
-    @Inject('PROVINCE_MODEL')
-    private provinceModel: Model<IProvince>,
+    @InjectRepository(Province)
+    private provinceRepository: Repository<Province>,
   ) {}
 
-  async create(province: Province): Promise<any> {
-    const id = (
-      await this.provinceModel.aggregate(getLastByIdPipeline()).exec()
-    )[0]?.id;
-    province.id = id ? id + 1 : 1;
-    return await this.provinceModel.create(province);
+  async create(province: Province): Promise<Province> {
+    // Con TypeORM, se usa save que puede manejar la creación y actualización.
+    // Se asume que la entidad Province tiene una estrategia de incremento automático para el ID.
+    return await this.provinceRepository.save(province);
   }
 
-  async findAll() {
-    return await this.provinceModel.find().exec();
+  async findAll(): Promise<Province[]> {
+    return await this.provinceRepository.find();
   }
 
-  async findOne(id: number): Promise<any> {
-    return await this.provinceModel.findOne({ _id: id });
+  async findOne(id: number): Promise<Province> {
+    return await this.provinceRepository.findOneBy({ id });
   }
 
-  async update(id: string, province: Province) {
-    const filter = { _id: id };
-    const updateData = { $set: province };
-    return await this.provinceModel.updateOne(filter, updateData);
+  async update(id: number, province: Province): Promise<void> {
+    await this.provinceRepository.update(id, province);
   }
 
-  async remove(id: number) {
-    return await this.provinceModel.deleteOne({ _id: id });
+  async remove(id: number): Promise<void> {
+    await this.provinceRepository.delete(id);
   }
 
-  async findAllPaging(filter?: string, page?: number, pageSize?: number) {
-    // If the filter is empty, we use a regular expression that matches everything
-
-    page = page ? page : 1;
-    filter = filter ? filter : '';
-    pageSize = pageSize ? pageSize : 10;
-
-    let regex = filter ? new RegExp(filter, 'i') : /.*/;
-    const offset: number = (page - 1) * pageSize;
-    let words = [];
-
-    if (filter) {
-      words = filter.split(',').map((word) => word.trim());
-      regex = new RegExp(words.join('|'), 'i');
-    }
-
-    // Get and count the results
-    const results = await this.provinceModel.aggregate(
-      findAllPaging(regex, offset, pageSize),
-    );
-
-    const count_values = (await this.provinceModel.aggregate(
-      countValues(),
-    )) as any;
+  async findAllPaging(
+    filter = '',
+    page = 1,
+    pageSize = 10,
+  ): Promise<{
+    data: Province[];
+    pagina_actual: number;
+    total_paginas: number;
+    total_resultados: number;
+  }> {
+    const [results, total] = await this.provinceRepository.findAndCount({
+      where: { nom: filter ? Like(`%${filter}%`) : Not(Like("''")) }, // o cualquier otra columna para filtrar
+      take: pageSize,
+      skip: (page - 1) * pageSize,
+    });
 
     return {
       data: results,
       pagina_actual: page,
-      total_paginas: Math.ceil(count_values[0]?.length / pageSize),
-      total_resultados: count_values[0]?.length,
+      total_paginas: Math.ceil(total / pageSize),
+      total_resultados: total,
     };
   }
 }

@@ -8,7 +8,7 @@ import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from '../../repository/store/store-provider-repository';
+} from '../../database/repository/store/store-provider-repository';
 
 @Injectable()
 export class StoreProviderService {

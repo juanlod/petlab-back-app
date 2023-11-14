@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { DatabaseModule } from 'src/database/database.module';
 import { UnityTypeController } from './unity-type.controller';
-import { unityTypeProviders } from 'src/database/providers/store/unity-type.provider';
 import { UnityTypeService } from '../../../services/store/unity-type.service';
+import { UnityType } from 'src/database/schemas/store/unity-type';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [TypeOrmModule.forFeature([UnityType])],
   controllers: [UnityTypeController],
-  providers: [UnityTypeService, ...unityTypeProviders],
+  providers: [UnityTypeService],
 })
 export class UnityTypeModule {}

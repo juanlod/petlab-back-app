@@ -1,171 +1,103 @@
-/* eslint-disable prettier/prettier */
-import { ApiProperty } from '@nestjs/swagger';
-import mongoose from 'mongoose';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm';
+import { Pet } from './pet';
+import { Debt } from './debts';
 
-const Schema = mongoose.Schema;
-
-/**
- * Interfaz de cliente. Necesario para implementacion
- */
-export interface IClient extends Document {
-  _id: string;
-  idc: number;
-  ayn: string;
-  dir: string;
-  codp: string;
-  codt: string;
-  tel: string;
-  telC: string;
-  email: string;
-  obs: string;
-  mark: number;
-  feci: Date;
-  fecu: Date;
-  motuv: string;
-  deuda: boolean;
-  problematico: boolean;
-  cantidadDeuda: string;
-  obra: number;
-  Loc: number;
-  Dep: number;
-  tel2: string;
-  telC2: string;
-  codt2: string;
-  codp2: string;
-  Identif: string;
-  mascotas: mongoose.Schema.Types.ObjectId[];
-  debts: mongoose.Schema.Types.ObjectId[];
-  lopd: boolean;
-  password: string;
-}
-
+@Entity({ name: 'clientes' })
 export class Client {
-  @ApiProperty({ description: 'mongo id' })
-  _id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-  @ApiProperty({ description: 'sql id' })
+  @Column()
   idc: number;
 
-  @ApiProperty({ description: 'full description' })
+  @Column({ length: 255 })
   ayn: string;
 
-  @ApiProperty({ description: 'address' })
+  @Column({ length: 255, nullable: true })
   dir: string;
 
-  @ApiProperty({ description: 'postal code' })
+  @Column({ length: 10, nullable: true })
   codp: string;
 
-  @ApiProperty({ description: 'mongo id' })
+  @Column({ length: 10, nullable: true })
   codt: string;
 
-  @ApiProperty()
+  @Column({ length: 20, nullable: true })
   tel: string;
 
-  @ApiProperty()
+  @Column({ length: 20, nullable: true })
   telC: string;
 
-  @ApiProperty({ description: 'email' })
+  @Column({ length: 255, nullable: true })
   email: string;
 
-  @ApiProperty({ description: 'client observations' })
+  @Column({ type: 'text', nullable: true })
   obs: string;
 
-  @ApiProperty()
+  @Column({ nullable: true })
   mark: number;
 
-  @ApiProperty({ description: 'register date' })
+  @CreateDateColumn()
   feci: Date;
 
-  @ApiProperty()
+  @UpdateDateColumn()
   fecu: Date;
 
-  @ApiProperty()
+  @Column({ length: 255, nullable: true })
   motuv: string;
 
-  @ApiProperty({ description: 'indicates if the client have debt' })
+  @Column({ default: false })
   deuda: boolean;
 
-  @ApiProperty({ description: 'Indicates if the client is dangerous' })
+  @Column({ default: false })
   problematico: boolean;
 
-  @ApiProperty({ description: 'debt quantity' })
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   cantidadDeuda: string;
 
-  @ApiProperty()
+  @Column({ nullable: true })
   obra: number;
 
-  @ApiProperty({ description: 'locality id reference' })
+  @Column({ nullable: true })
   Loc: number;
 
-  @ApiProperty({ description: 'province id reference' })
+  @Column({ nullable: true })
   Dep: number;
 
-  @ApiProperty({ description: 'phone' })
+  @Column({ length: 20, nullable: true })
   tel2: string;
 
-  @ApiProperty({ description: 'movile phone' })
+  @Column({ length: 20, nullable: true })
   telC2: string;
 
-  @ApiProperty()
+  @Column({ length: 10, nullable: true })
   codt2: string;
 
-  @ApiProperty({ description: 'postal code' })
+  @Column({ length: 10, nullable: true })
   codp2: string;
 
-  @ApiProperty({ description: 'country identification number' })
+  @Column({ length: 50, nullable: true })
   Identif: string;
 
-  @ApiProperty({ description: 'list of pets' })
-  mascotas: mongoose.Schema.Types.ObjectId[];
+  // Si tienes relaciones con otras entidades, deberías mapearlas aquí
+  // Por ejemplo, si 'mascotas' es una colección de otra entidad:
+  @OneToMany((type) => Pet, (mascota) => mascota.client)
+  mascotas: Pet[];
 
-  @ApiProperty({
-    description: 'Indicates if the client has writed lopd document',
-  })
+  // Y lo mismo para las deudas:
+  @OneToMany((type) => Debt, (deuda) => deuda.clientId)
+  debts: Debt[];
+
+  @Column({ default: false })
   lopd: boolean;
 
-  @ApiProperty({ description: 'password' })
+  @Column()
   password: string;
-
-  @ApiProperty({ description: 'list of debts' })
-  debts: mongoose.Schema.Types.ObjectId[];
 }
-
-// Creacion de clase cliente a traves de la interfaz
-export const ClientSchema = new Schema<IClient>({
-  idc: { type: Number, required: true },
-  ayn: { type: String, required: true },
-  dir: { type: String, required: false },
-  codp: { type: String, required: false },
-  codt: { type: String, required: false },
-  tel: { type: String, required: false },
-  telC: { type: String, required: false },
-  email: { type: String, required: false },
-  obs: { type: String, required: false },
-  mark: { type: Number, required: false },
-  feci: { type: Date, required: false, default: new Date() },
-  fecu: { type: Date, required: false },
-  motuv: { type: String, required: false },
-  deuda: { type: Boolean, required: false },
-  problematico: { type: Boolean, required: false },
-  cantidadDeuda: { type: String, required: false },
-  obra: { type: Number, required: false },
-  Loc: { type: Number, required: false },
-  Dep: { type: Number, required: false },
-  tel2: { type: String, required: false },
-  telC2: { type: String, required: false },
-  codt2: { type: String, required: false },
-  codp2: { type: String, required: false },
-  Identif: { type: String, required: false },
-  mascotas: [
-    { type: mongoose.Schema.Types.ObjectId, ref: 'mascotas', required: false },
-  ],
-  debts: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'client_debts',
-      required: false,
-    },
-  ],
-  lopd: { type: Boolean, required: false },
-  password: { type: String, required: false },
-});

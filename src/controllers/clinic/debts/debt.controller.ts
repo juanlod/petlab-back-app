@@ -82,7 +82,7 @@ export class DebtController {
   @ApiBadRequestResponse({ description: 'The request body is invalid.' })
   @Patch('update/:id')
   @ApiBody({ type: Debt })
-  update(@Param('id') id: string, @Body() debt: Debt) {
+  update(@Param('id') id: number, @Body() debt: Debt) {
     return this.debtService.update(id, debt);
   }
 

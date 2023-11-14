@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { DebtService } from '../../../services/clinic/debt.service';
 import { DebtController } from './debt.controller';
-import { DatabaseModule } from 'src/database/database.module';
-import { debtProviders } from 'src/database/providers/clinic/debt.provider';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Debt } from 'src/database/schemas/clinic/debts';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [TypeOrmModule.forFeature([Debt])],
   controllers: [DebtController],
-  providers: [DebtService, ...debtProviders],
+  providers: [DebtService],
 })
 export class DebtModule {}

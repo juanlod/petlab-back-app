@@ -1,51 +1,29 @@
-'use strict';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import mongoose from 'mongoose';
 
-const Schema = mongoose.Schema;
-
-/**
- * Interfaz. Necesario para implementacion
- */
-export interface IProvince extends Document {
-  _id: string;
-  id: number;
-  nom: string;
-  Ctel: string;
-  ran: number;
-  deleted: boolean;
-  active: boolean;
-}
-
+@Entity('provincias') // El nombre de la tabla en tu base de datos MySQL
 export class Province {
   @ApiProperty()
-  _id: string;
-
-  @ApiProperty()
+  @PrimaryGeneratedColumn()
   id: number;
 
   @ApiProperty()
+  @Column({ type: 'varchar', length: 255 })
   nom: string;
 
   @ApiProperty()
+  @Column({ type: 'varchar', length: 255, nullable: true })
   Ctel: string;
 
   @ApiProperty()
+  @Column({ type: 'int', nullable: true })
   ran: number;
 
   @ApiProperty()
+  @Column({ type: 'boolean', default: false })
   deleted: boolean;
 
   @ApiProperty()
+  @Column({ type: 'boolean', default: true })
   active: boolean;
 }
-
-// Creacion de clase a partir de la interfaz
-export const ProvinceSchema = new Schema<IProvince>({
-  id: { type: Number, required: true },
-  nom: { type: String, required: true },
-  Ctel: { type: String, required: false },
-  ran: { type: Number, required: false },
-  deleted: { type: Boolean, required: false, default: false },
-  active: { type: Boolean, required: false, default: true },
-});

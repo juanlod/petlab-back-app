@@ -5,7 +5,7 @@ import {
   countValues,
   findAllPaging,
   getLastByIdPipeline,
-} from '../../repository/master/sex.repository';
+} from '../../database/repository/master/sex.repository';
 
 @Injectable()
 export class SexService {
