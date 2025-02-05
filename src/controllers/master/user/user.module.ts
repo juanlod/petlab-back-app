@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { UserService } from '../../../services/master/user.service';
 import { UserController } from './user.controller';
 import { DatabaseModule } from 'src/database/database.module';
-import { userProviders } from 'src/database/providers/User.provider';
 import { JwtModule } from '@nestjs/jwt';
 import { environment } from 'src/environments/environment';
+import { userProviders } from 'src/database/providers/user.provider';
 
 @Module({
   imports: [

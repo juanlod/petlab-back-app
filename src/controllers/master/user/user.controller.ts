@@ -10,8 +10,7 @@ import {
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from '../../../services/master/user.service';
-import { LoginDto, User } from 'src/database/schemas/User';
-
+import { User, LoginDto } from 'src/database/schemas/user';
 @ApiTags('User')
 @Controller('/api/user')
 export class UserController {

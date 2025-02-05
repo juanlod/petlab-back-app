@@ -19,7 +19,37 @@ export class UserService {
     private userModel: Model<IUser>,
     private jwtService: JwtService,
   ) {}
+  
+  
+  async onModuleInit() {
+    await this.createDefaultUser();
+  }
 
+  /**
+   * Crea un usuario por defecto si no existe
+   */
+  async createDefaultUser() {
+    const existingUser = await this.userModel.findOne({ email: 'admin@example.com' });
+
+    if (!existingUser) {
+      this.logger.log('⚡ Creando usuario administrador por defecto...');
+
+      const hashedPassword = await bcrypt.hash('admin', 10);
+      const defaultUser = new this.userModel({
+        nombres: 'admin',
+        apellidos: 'User',
+        email: 'admin@petlab.com',
+        password: hashedPassword,
+        telefono: '123456789',
+        rol: 'admin',
+      });
+
+      await defaultUser.save();
+      this.logger.log('✅ Usuario administrador creado con éxito');
+    } else {
+      this.logger.log('🔹 Usuario administrador ya existe');
+    }
+  }
   /**
    * Login user
    * @param user
